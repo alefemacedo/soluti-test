@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace SocialContract\V1\Rest\SuperClass;
 
 use Doctrine\ORM\Mapping as ORM;
