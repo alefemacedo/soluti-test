@@ -134,9 +134,9 @@ return [
     ],
     'zf-content-negotiation' => [
         'controllers' => [
-            'SocialContract\\V1\\Rest\\Usuario\\Controller' => 'Json',
-            'SocialContract\\V1\\Rest\\Empresa\\Controller' => 'Json',
-            'SocialContract\\V1\\Rest\\Contrato\\Controller' => 'Json',
+            'SocialContract\\V1\\Rest\\Usuario\\Controller' => 'HalJson',
+            'SocialContract\\V1\\Rest\\Empresa\\Controller' => 'HalJson',
+            'SocialContract\\V1\\Rest\\Contrato\\Controller' => 'HalJson',
         ],
         'accept_whitelist' => [
             'SocialContract\\V1\\Rest\\Usuario\\Controller' => [
@@ -209,5 +209,14 @@ return [
                 'is_collection' => true,
             ],
         ],
+    ],
+    'doctrine-hydrator' => [
+        'SocialContract\V1\Rest\Empresa\EmpresaHydrator' => [
+            'entity_class' => 'SocialContract\V1\Rest\Empresa\EmpresaEntity',
+            'object_manager' => 'doctrine.entitymanager.orm_default',
+            'by_value' => true,
+            'strategies' => [],
+            'use_generated_hydrator' => true,
+        ]
     ],
 ];

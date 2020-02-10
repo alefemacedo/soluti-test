@@ -1,8 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace SocialContract\V1\Rest\Usuario;
 
 use SocialContract\V1\Rest\SuperClass\PessoaFisica;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Zend\Hydrator\ClassMethods;
 
 /**
  * Entidade Usuário
@@ -49,8 +53,35 @@ class UsuarioEntity extends PessoaFisica {
     private $responsabilidades;
 
     public function __construct() {
-        $this->responsabilidades = [];
+        $this->responsabilidades = new ArrayCollection();
+        // if(!empty($data)) {
+        //     (new ClassMethods(false))->hydrate($data, $this);
+        // }
     }
+
+    // public function toArray() {
+    //     return (new ClassMethods(false))->extract($this);
+    // }
+
+    // public function getArrayCopy() {
+
+    //     return [
+    //         'id' => $this->getId(),
+    //         'name' => $this->getNome(),
+    //         'password' => $this->getSenha(),
+    //         'email' => $this->getEmail(),
+    //         'cpf' => $this->getCpf()
+    //     ];
+    // }
+
+    // public function exchangeArray($data) {
+
+    //     $this->id = $data['id'];
+    //     $this->nome = $data['name'];
+    //     $this->senha = $data['password'];
+    //     $this->email = $data['email'];
+    //     $this->cpf = $data['cpf'];
+    // }
 
     /**
      * Retorna o ID
