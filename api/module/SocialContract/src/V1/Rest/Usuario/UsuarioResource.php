@@ -3,9 +3,17 @@ namespace SocialContract\V1\Rest\Usuario;
 
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
+use Doctrine\ORM\EntityManager;
 
 class UsuarioResource extends AbstractResourceListener
 {
+
+    protected $mapper;
+
+    public function __construct(UsuarioMapper $mapper) {
+        $this->mapper = $mapper;
+    }
+
     /**
      * Create a resource
      *
@@ -47,7 +55,9 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        $user = $this->mapper->fetch($id);
+
+        return $user;
     }
 
     /**
@@ -58,7 +68,10 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        
+        $users = $this->mapper->fetchAll();
+
+        return $users;
     }
 
     /**
