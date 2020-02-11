@@ -24,14 +24,15 @@ class ContratoEntity {
     private $id;
 
     /**
-     * Chave estrangeira para a tabela de Empresa
+     * Referência para a instância na tabela de Empresa
+     * a qual o Contrato Social é referente
      * 
      * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\Empresa\EmpresaEntity")
      * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
      * 
-     * @var int
+     * @var SocialContract\V1\Rest\Empresa\EmpresaEntity
      */
-    private $empresaId;
+    private $empresa;
 
     /**
      * Caminho para o arquivo do Contrato Social
@@ -77,27 +78,28 @@ class ContratoEntity {
     }
 
     /**
-     * Retorna a chave estrangeira para a tabela de
+     * Retorna a referência para a tabela de
      * Empresa
      * 
-     * @return int
+     * @return SocialContract\V1\Rest\Empresa\EmpresaEntity
      */ 
-    public function getEmpresaId()
+    public function getEmpresa()
     {
-        return $this->empresaId;
+        return $this->empresa;
     }
 
     /**
-     * Define o valor para a chave estrangeira para
-     * a tabela de Empresa
+     * Define o valor para a referência da tabela de Empresa
      *
-     * @param  int  $empresaId Chave estrangeira para a tabela de Empresa
+     * @param  SocialContract\V1\Rest\Empresa\EmpresaEntity  $empresa
+     * Instância da entidade Empresa definida por esta entidade
+     * Contrato Social
      * 
      * @return  self
      */ 
-    public function setEmpresaId($empresaId)
+    public function setEmpresa($empresa)
     {
-        $this->empresaId = $empresaId;
+        $this->empresa = $empresa;
 
         return $this;
     }

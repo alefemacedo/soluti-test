@@ -32,16 +32,16 @@ class ResponsabilidadeEntity {
     private $id;
 
     /**
-     * Chave estrangeira para a tabela de UsuarioEntity 
+     * Chave estrangeira para a tabela de PessoaFisicaEntity 
      * de modo a vincular uma instância de Contrato Social
-     * a uma instância de Usuário
+     * a uma instância de Pessoa Física
      * 
-     * @ORM\ManyToOne(targetEntity="SocialContract\V1\Rest\Usuario\UsuarioEntity", inversedBy="responsabilidades")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="responsabilidades")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      * 
      * @var int
      */
-    private $usuarioId;
+    private $pessoaId;
 
     /**
      * Chave estrangeira para a tabela de ContratoEntity 
@@ -68,27 +68,27 @@ class ResponsabilidadeEntity {
 
     /**
      * Retorna a chave estrangeira para a tabela
-     * de UsuarioEntity
+     * de PessoaFisicaEntity
      * 
      * @return int
      */ 
-    public function getUsuarioId()
+    public function getPessoaId()
     {
-        return $this->usuarioId;
+        return $this->pessoaId;
     }
 
     /**
      * Define o valor da chave estrangeira para a
-     * tabela de UsuarioEntity
+     * tabela de PessoaFisicaEntity
      *
-     * @param int $usuarioId Chave estrangeira para a tabela de
-     * UsuarioEntity
+     * @param int $pessoaId Chave estrangeira para a tabela de
+     * PessoaFisicaEntity
      * 
      * @return  self
      */ 
-    public function setUsuarioId($usuarioId)
+    public function setPessoaId($pessoaId)
     {
-        $this->usuarioId = $usuarioId;
+        $this->pessoaId = $pessoaId;
 
         return $this;
     }

@@ -55,7 +55,7 @@ class UsuarioMapper implements MapperInterface {
      * 
      * @return Collection
      */
-    public function fetch(int $id) {
+    public function fetch($id) {
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity', 'u');
         $rsm->addFieldResult('u', 'id', 'id');

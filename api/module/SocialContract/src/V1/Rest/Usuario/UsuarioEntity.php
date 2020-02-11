@@ -5,7 +5,6 @@ namespace SocialContract\V1\Rest\Usuario;
 
 use SocialContract\V1\Rest\SuperClass\PessoaFisica;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Hydrator\ClassMethods;
 
 /**
@@ -14,7 +13,7 @@ use Zend\Hydrator\ClassMethods;
  * @ORM\Table(name="users")
  * @ORM\Entity
  */
-class UsuarioEntity extends PessoaFisica {
+class UsuarioEntity {
 
     /**
      * @ORM\Id
@@ -44,20 +43,15 @@ class UsuarioEntity extends PessoaFisica {
     private $senha;
 
     /**
-     * Colleção de instâncias das subclasses da entidade
-     * ResponsabilidadeEntity que vinculam as instâncias
-     * da entidade UsuarioEntity a uma instância de ContratoEntity
+     * Referência para a instância na tabela de Pessoa
+     * a qual o Usuário é referente
      * 
-     * @ORM\OneToMany(targetEntity="SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity", mappedBy="usuarioId")
+     * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="usuario")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * 
+     * @var SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity
      */
-    private $responsabilidades;
-
-    public function __construct() {
-        $this->responsabilidades = new ArrayCollection();
-        // if(!empty($data)) {
-        //     (new ClassMethods(false))->hydrate($data, $this);
-        // }
-    }
+    private $pessoa;
 
     // public function toArray() {
     //     return (new ClassMethods(false))->extract($this);
