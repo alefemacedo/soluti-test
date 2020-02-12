@@ -22,7 +22,17 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+        $return = [
+            'message' => ''
+        ];
+        try {
+            $this->mapper->create($data);
+            $return['message'] = 'Usuário cadastrado com sucesso!';
+        } catch (\Exception $e) {
+            return new ApiProblem(500, $e->getMessage());
+        }
+
+        return $return;
     }
 
     /**
@@ -55,9 +65,10 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        $user = $this->mapper->fetch($id);
+        die(var_dump(['parametros' => $this->getEvent()->getQueryParams()]));
+        $usuario = $this->mapper->fetch($id);
 
-        return $user;
+        return $usuario;
     }
 
     /**
@@ -68,10 +79,11 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
+        die(var_dump($params));
         
-        $users = $this->mapper->fetchAll();
+        $usuarios = $this->mapper->fetchAll();
 
-        return $users;
+        return $usuarios;
     }
 
     /**
