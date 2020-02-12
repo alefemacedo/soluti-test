@@ -30,6 +30,7 @@ return [
     'Phpro\\DoctrineHydrationModule',
     'ZF\\Apigility\\Doctrine\\Server',
     'DoctrineORMModule',
+    'ZfrCors',
     'Application',
     'SocialContract',
 ];

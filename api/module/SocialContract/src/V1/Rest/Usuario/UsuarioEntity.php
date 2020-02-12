@@ -27,7 +27,7 @@ class UsuarioEntity {
     /**
      * Email\Login do Usuário
      * 
-     * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     * @ORM\Column(name="email", type="string", length=255, nullable=false, unique=true)
      * 
      * @var string
      */
@@ -131,6 +131,31 @@ class UsuarioEntity {
     public function setSenha(string $senha)
     {
         $this->senha = $senha;
+
+        return $this;
+    }
+
+    /**
+     * Retorna a Pessoa Física a qual o Usuário é referente
+     *
+     * @return  SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity
+     */ 
+    public function getPessoa()
+    {
+        return $this->pessoa;
+    }
+
+    /**
+     * Define a Pessoa Física a qual o Usuário é referente
+     *
+     * @param  SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity  $pessoa
+     * Instância de Pessoa Física a qual o Usuário é referente
+     *
+     * @return  self
+     */ 
+    public function setPessoa(SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity $pessoa)
+    {
+        $this->pessoa = $pessoa;
 
         return $this;
     }

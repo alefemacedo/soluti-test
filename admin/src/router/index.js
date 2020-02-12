@@ -21,7 +21,22 @@ export const constantRouterMap = [
   {
     path: "/login",
     component: () => import("@/views/login/index"),
-    hidden: true
+    redirect: "/login/form",
+    name: "login",
+    children: [
+      {
+        path: "/login/form",
+        component: () => import("@/views/login/form"),
+        name: "login.form",
+        meta: { title: "login.form.title", icon: "dashboard", noCache: true }
+      },
+      {
+        path: "/login/user-registry",
+        component: () => import("@/views/login/user-registry"),
+        name: "login.user.registry",
+        meta: { title: "login.user.registry.title", icon: "dashboard", noCache: true }
+      }
+    ]
   },
   {
     path: "/login/:message",
