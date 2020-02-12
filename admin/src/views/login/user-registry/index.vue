@@ -1,10 +1,10 @@
 <template>
   <div class="login--registry--user container">
-    <div class="registry--user_title">
+    <div class="registry--user_title pt-5">
       <h4 class="display-4">Cadastrar Usuário</h4>
     </div>
     <div class="registy--user__form">
-      <s-user-form />
+      <s-user-form @change-route="changeRoute"/>
     </div>
   </div>
 </template>
@@ -17,41 +17,16 @@ export default {
   components: {
     "s-user-form": UserForm
   },
-  data() {
-    return {
-
-    }
-  },
-  created() {
-    this.initializeForm()
-  },
   methods: {
-    initializeForm() {
-      this.form = {
-        name: "",
-        cpf: "",
-        email: "",
-        password: "",
-        password_confirmation: ""
-      }
-    },
-    /**
-     * Submita o formulário com os dados informados
-     */
-    submitForm() {
-
-    },
-    /**
-     * Cancela o cadastro, limpa o formulário e retorna
-     * a página de login
-     */
-    cancel() {
-      this.initializeForm()
+    changeRoute() {
+      this.$router.push({ name: "login" })
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+  .login--registry--user {
+    height: 100%;
+  }
 </style>
