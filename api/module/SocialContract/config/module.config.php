@@ -89,7 +89,10 @@ return [
                 0 => 'GET',
                 1 => 'POST',
             ],
-            'collection_query_whitelist' => [],
+            'collection_query_whitelist' => [
+                0 => 'filter',
+                1 => 'pageNumber',
+            ],
             'page_size' => 25,
             'page_size_param' => null,
             'entity_class' => \SocialContract\V1\Rest\Usuario\UsuarioEntity::class,
@@ -221,6 +224,7 @@ return [
                 'route_name' => 'social-contract.rest.usuario',
                 'route_identifier_name' => 'usuario_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
+                'max_depth' => 1,
             ],
             \SocialContract\V1\Rest\Usuario\UsuarioCollection::class => [
                 'entity_identifier_name' => 'id',
@@ -233,6 +237,7 @@ return [
                 'route_name' => 'social-contract.rest.contrato',
                 'route_identifier_name' => 'contrato_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
+                'max_depth' => 1,
             ],
             \SocialContract\V1\Rest\Contrato\ContratoCollection::class => [
                 'entity_identifier_name' => 'id',
@@ -245,6 +250,7 @@ return [
                 'route_name' => 'social-contract.rest.empresa',
                 'route_identifier_name' => 'empresa_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
+                'max_depth' => 1,
             ],
             \SocialContract\V1\Rest\Empresa\EmpresaCollection::class => [
                 'entity_identifier_name' => 'id',
@@ -257,6 +263,7 @@ return [
                 'route_name' => 'social-contract.rest.pessoa-fisica',
                 'route_identifier_name' => 'pessoa_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
+                'max_depth' => 1,
             ],
             \SocialContract\V1\Rest\PessoaFisica\PessoaFisicaCollection::class => [
                 'entity_identifier_name' => 'id',
@@ -273,6 +280,82 @@ return [
             'by_value' => true,
             'strategies' => [],
             'use_generated_hydrator' => true,
+        ],
+    ],
+    'zf-content-validation' => [
+        'SocialContract\\V1\\Rest\\Usuario\\Controller' => [
+            'input_filter' => 'SocialContract\\V1\\Rest\\Usuario\\Validator',
+        ],
+    ],
+    'input_filter_specs' => [
+        'SocialContract\\V1\\Rest\\Usuario\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\EmailAddress::class,
+                        'options' => [
+                            'message' => 'Por favor informe um e-mail válido',
+                        ],
+                    ],
+                    1 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe o e-mail do usuário',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'email',
+                'description' => 'E-mail/Login do usuário',
+                'field_type' => 'email',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe o CPF da pessoa',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'cpf',
+                'description' => 'CPF da pessoa a qual o usuário pertence',
+                'field_type' => 'string',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informar o nome da pessoa',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'nome',
+                'description' => 'Nome da pessoa a qual o usuário é vinculado',
+                'field_type' => 'string',
+                'allow_empty' => false,
+            ],
+            3 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe uma senha para o usuário',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'senha',
+                'description' => 'Senha do usuário',
+                'field_type' => 'string',
+            ],
         ],
     ],
 ];
