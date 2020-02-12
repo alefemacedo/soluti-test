@@ -27,7 +27,7 @@ class PessoaFisicaEntity extends Pessoa {
     /**
      * Propriedade CPF que identifica uma Pessoa Física
      * 
-     * @ORM\Column(type="string", length=11, nullable=false)
+     * @ORM\Column(type="string", length=11, nullable=false, unique=true)
      * 
      * @var string
      */

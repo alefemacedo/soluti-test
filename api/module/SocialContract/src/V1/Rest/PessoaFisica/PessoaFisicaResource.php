@@ -3,9 +3,16 @@ namespace SocialContract\V1\Rest\PessoaFisica;
 
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
+use SocialContract\V1\Rest\Exception\NotFoundException;
 
 class PessoaFisicaResource extends AbstractResourceListener
 {
+    private $mapper;
+
+    public function __construct(PessoaFisicaMapper $mapper) {
+        $this->mapper = $mapper;
+    }
+
     /**
      * Create a resource
      *
@@ -47,7 +54,24 @@ class PessoaFisicaResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        $return = [
+            'person' => null,
+            'hasUser' => false,
+            'message' => ''
+        ];
+        try {
+            $pessoa = $this->mapper->fetch($id);
+
+            if (!is_null($pessoa)) {
+                $return['hasUser'] = !is_null($pessoa->getUsuario());
+                $pessoa->setUsuario(null);
+                $return['person'] = $pessoa;
+            }
+        } catch (\Exception $e) {
+            return new ApiProblem(500, $e->getMessage());
+        }
+
+        return $return;
     }
 
     /**
