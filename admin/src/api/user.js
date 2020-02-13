@@ -10,7 +10,7 @@ export function fetchAll(params) {
 
 export function create(requestParams) {
   return request({
-    url: "/usuario",
+    url: "/usuario/0",
     data: requestParams,
     method: "post"
   })
