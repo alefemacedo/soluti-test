@@ -78,9 +78,7 @@ class UsuarioResource extends AbstractResourceListener
      * @return ApiProblem|mixed
      */
     public function fetchAll($params = [])
-    {
-        die(var_dump($params));
-        
+    {      
         $usuarios = $this->mapper->fetchAll();
 
         return $usuarios;
