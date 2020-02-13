@@ -5,6 +5,19 @@
  * OAuth2\Server instances.
  */
 return [
+    'zf-mvc-auth' => [
+        'authentication' => [
+            'adapters' => [
+                'oauth2_doctrine' => [
+                    'adapter' => 'ZF\\MvcAuth\\Authentication\\OAuth2Adapter',
+                    'storage' => [
+                        'storage' => 'oauth2.doctrineadapter.default',
+                        'route' => '/oauth',
+                    ],
+                ],
+            ],
+        ],
+    ],
     'service_manager' => [
         'factories' => [
             \ZF\OAuth2\Service\OAuth2Server::class => \ZF\MvcAuth\Factory\NamedOAuth2ServerFactory::class,

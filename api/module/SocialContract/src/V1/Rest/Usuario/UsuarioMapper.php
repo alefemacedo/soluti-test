@@ -5,6 +5,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\EntityManager;
 use SocialContract\V1\Rest\Interfaces\MapperInterface;
 use SocialContract\V1\Rest\PessoaFisica\PessoaFisicaMapper;
+use Zend\Crypt\Password\Bcrypt;
 
 class UsuarioMapper implements MapperInterface {
     
@@ -26,6 +27,7 @@ class UsuarioMapper implements MapperInterface {
     public function create($data) {
         $pessoa = $this->pessoaMapper->fetch($data->cpf);
         $connection = $this->entityManager->getConnection();
+        $bcrypt = new Bcrypt();
 
         if (!is_null($pessoa) && !is_null($pessoa->getUsuario())) {
             throw new \Exception("Já existe um usuário cadastrado para esta pessoa!");
@@ -41,7 +43,7 @@ class UsuarioMapper implements MapperInterface {
             $stmt = $connection->prepare($sql);
             $stmt->bindValue(1, $pessoaId);
             $stmt->bindValue(2, $data->email);
-            $stmt->bindValue(3, $data->cpf);
+            $stmt->bindValue(3, $bcrypt->create($data->senha));
             $stmt->execute();
             $connection->commit();
         } catch (\Exception $e) {
@@ -66,8 +68,6 @@ class UsuarioMapper implements MapperInterface {
         $rsm->addFieldResult('p', 'person_id', 'id');
         $rsm->addFieldResult('p', 'cpf', 'cpf');
         $rsm->addFieldResult('p', 'name', 'nome');
-        // $rsm->addMetaResult('u', 'discr', 'discr'); // discriminator column
-        // $rsm->setDiscriminatorColumn('u', 'discr');
 
         $sql =  'SELECT u.id, u.email, u.password, p.id AS person_id, p.cpf, p.name FROM users as u LEFT JOIN people as p ' .
                 'ON u.person_id = p.id;';

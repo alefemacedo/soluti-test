@@ -4,6 +4,9 @@ import Layout from "@/views/layout"
 
 Vue.use(Router)
 
+/**
+ * Rotas da aplicação
+ */
 export const constantRouterMap = [
   {
     path: "",
@@ -13,7 +16,7 @@ export const constantRouterMap = [
       {
         path: "dashboard",
         component: () => import("@/views/dashboard/index"),
-        name: "Dashboard",
+        name: "dashboard",
         meta: { title: "dashboard", icon: "dashboard", noCache: true }
       }
     ]
@@ -38,31 +41,14 @@ export const constantRouterMap = [
       }
     ]
   },
-  {
-    path: "/login/:message",
-    component: () => import("@/views/login/index"),
-    hidden: true,
-    props: true
+  { 
+    path: "*",
+    redirect: "/404",
+    hidden: true 
   },
-  // {
-  //   path: '/new-password/:rememberToken',
-  //   component: () => import('@/views/login/new-password'),
-  //   hidden: true,
-  //   props: true
-  // },
-  // {
-  //   path: '/auth-redirect',
-  //   component: () => import('@/views/login/authredirect'),
-  //   hidden: true
-  // },
   {
     path: "/404",
     component: () => import("@/views/errorPage/404"),
-    hidden: true
-  },
-  {
-    path: "/401",
-    component: () => import("@/views/errorPage/401"),
     hidden: true
   },
   {

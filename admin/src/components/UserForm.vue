@@ -1,7 +1,7 @@
 <template>
   <div class="form--container">
     <div v-if="showForm" class="form--container__form">
-      <form class="border rounded p-2">
+      <form class="border rounded p-2" @submit.prevent="submitForm">
         <s-validated-input
           v-model="form.nome"
           label="Nome"
@@ -33,29 +33,31 @@
           :messages="error"/>
 
         <div class="form-group d-flex justify-content-end">
-          <button @click.prevent="submitForm" type="submit" class="btn btn-primary mr-1">Registrar</button>
+          <button type="submit" class="btn btn-primary mr-1">Registrar</button>
           <button @click="cancel" type="button" class="btn btn-danger">Cancelar</button>
         </div>
       </form>
     </div>
 
     <div v-else class="form--container__search_cpf">
-      <div class="form-group">
-        <label for="search_cpf">Buscar CPF</label>
-        <div class="input-group mb-3">
-          <input 
-            id="search_cpf"
-            v-model="form.cpf"
-            type="text"
-            class="form-control"
-            placeholder="Informe seu cpf para consulta"
-            aria-describedby="button-search">
-          <div class="input-group-append" id="button-search">
-            <button class="btn btn-outline-secondary" type="button" @click="searchCpf">Buscar</button>
-            <button class="btn btn-outline-danger" type="button" @click="$router.go(-1)">Cancelar</button>
+      <form @submit.prevent="searchCpf">
+        <div class="form-group">
+          <label for="search_cpf">Buscar CPF</label>
+          <div class="input-group mb-3">
+            <input 
+              id="search_cpf"
+              v-model="form.cpf"
+              type="text"
+              class="form-control"
+              placeholder="Informe seu cpf para consulta"
+              aria-describedby="button-search">
+            <div class="input-group-append" id="button-search">
+              <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+              <button class="btn btn-outline-danger" type="button" @click="$router.go(-1)">Cancelar</button>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -82,6 +84,9 @@ export default {
     this.initializeForm()
   },
   methods: {
+    /**
+     * Inicializa o objeto que representa o formulário
+     */
     initializeForm() {
       this.form = {
         nome: "",
@@ -90,6 +95,10 @@ export default {
         senha: ""
       }
     },
+    /**
+     * Busca os dados de uma pessoa de acordo com o
+     * CPF informado
+     */
     searchCpf() {
       fetchPerson(this.form.cpf)
         .then((response) => {

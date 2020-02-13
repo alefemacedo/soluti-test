@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace SocialContract\V1\Rest\Usuario;
 
+use ZF\OAuth2\Doctrine\Entity\UserInterface;
 use SocialContract\V1\Rest\SuperClass\PessoaFisica;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Hydrator\ClassMethods;
+use Zend\Stdlib\ArraySerializableInterface;
 
 /**
  * Entidade Usuário
@@ -13,16 +15,36 @@ use Zend\Hydrator\ClassMethods;
  * @ORM\Table(name="users")
  * @ORM\Entity
  */
-class UsuarioEntity {
+class UsuarioEntity implements UserInterface, ArraySerializableInterface {
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * 
      * @var int
      */
     private $id;
+
+    /**
+     * Referência a tabela Client utilizada pelo OAuth2
+     */
+    protected $client;
+
+    /**
+     * Referência a tabela AcessToken utilizada pelo OAuth2
+     */
+    protected $accessToken;
+
+    /**
+     * Referência a tabela AuthorizationCode utilizada pelo OAuth2
+     */
+    protected $authorizationCode;
+
+    /**
+     * Referência a tabela RefreshToken utilizada pelo OAuth2
+     */
+    protected $refreshToken;
 
     /**
      * Email\Login do Usuário
@@ -57,25 +79,33 @@ class UsuarioEntity {
     //     return (new ClassMethods(false))->extract($this);
     // }
 
-    // public function getArrayCopy() {
+    public function getArrayCopy() {
 
-    //     return [
-    //         'id' => $this->getId(),
-    //         'name' => $this->getNome(),
-    //         'password' => $this->getSenha(),
-    //         'email' => $this->getEmail(),
-    //         'cpf' => $this->getCpf()
-    //     ];
-    // }
+        return [
+            'id' => $this->getId(),
+            'password' => $this->getSenha(),
+            'email' => $this->getEmail()
+        ];
+    }
 
-    // public function exchangeArray($data) {
+    public function exchangeArray(array $data)
+    {
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case 'email':
+                    $this->setEmail($value);
+                    break;
+                case 'password':
+                    var_dump($value);
+                    $this->setSenha($value);
+                    break;
+                default:
+                    break;
+            }
+        }
 
-    //     $this->id = $data['id'];
-    //     $this->nome = $data['name'];
-    //     $this->senha = $data['password'];
-    //     $this->email = $data['email'];
-    //     $this->cpf = $data['cpf'];
-    // }
+        return $this;
+    }
 
     /**
      * Retorna o ID
@@ -153,9 +183,89 @@ class UsuarioEntity {
      *
      * @return  self
      */ 
-    public function setPessoa(SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity $pessoa)
+    public function setPessoa($pessoa)
     {
         $this->pessoa = $pessoa;
+
+        return $this;
+    }
+
+    /**
+     * Retorna a referência da tabela Client utilizada pelo OAuth2
+     */ 
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * Define a referência da tabela Client utilizada pelo OAuth2
+     *
+     * @return  self
+     */ 
+    public function setClient($client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Retorna a referência da tabela AcessToken utilizada pelo OAuth2
+     */ 
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * Define a referência da tabela AcessToken utilizada pelo OAuth2
+     *
+     * @return  self
+     */ 
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+
+        return $this;
+    }
+
+    /**
+     * Retorna a referência da tabela AuthorizationCode utilizada pelo OAuth2
+     */ 
+    public function getAuthorizationCode()
+    {
+        return $this->authorizationCode;
+    }
+
+    /**
+     * Define a referência da tabela AuthorizationCode utilizada pelo OAuth2
+     *
+     * @return  self
+     */ 
+    public function setAuthorizationCode($authorizationCode)
+    {
+        $this->authorizationCode = $authorizationCode;
+
+        return $this;
+    }
+
+    /**
+     * Retorna a referência da tabela RefreshToken utilizada pelo OAuth2
+     */ 
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
+    }
+
+    /**
+     * Define a referência da tabela RefreshToken utilizada pelo OAuth2
+     *
+     * @return  self
+     */ 
+    public function setRefreshToken($refreshToken)
+    {
+        $this->refreshToken = $refreshToken;
 
         return $this;
     }

@@ -51,6 +51,10 @@ export default {
     }
   },
   computed: {
+    /**
+     * Computed-property para que a propriedade value
+     * interaja com o v-model utilizado no component
+     */
     input: {
       get() {
         return this.value
@@ -61,9 +65,16 @@ export default {
     }
   },
   methods: {
+    /**
+     * Verifica se há mensagens de erro para a propriedade
+     * a qual o input está vinculada
+     */
     hasError(property) {
       return Object.prototype.hasOwnProperty.call(this.messages, property)
     },
+    /**
+     * Retorna as mensagens de erro da propriedade em questão
+     */
     getErrorMessages(property) {
       return this.messages[property]
     }

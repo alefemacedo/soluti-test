@@ -10,22 +10,24 @@
       <div class="login--form_title">
         <h2 class="">Bem Vindo!!</h2>
       </div>
-      
-      <div class="form-group">
-        <label for="email">E-mail|Login</label>
-        <input v-model="form.email" type="email" class="form-control" id="email" aria-describedby="emailHelp">
-        <small id="emailHelp" class="form-text text-muted">Nunca compartilhe suas informações com terceiros.</small>
-      </div>
 
-      <div class="form-group">
-        <label for="password">Senha</label>
-        <input v-model="form.password" type="password" class="form-control" id="password">
-      </div>
+      <form @submit.prevent="submit">
+        <div class="form-group">
+          <label for="email">E-mail|Login</label>
+          <input v-model="form.email" type="email" class="form-control" id="email" aria-describedby="emailHelp">
+          <small id="emailHelp" class="form-text text-muted">Nunca compartilhe suas informações com terceiros.</small>
+        </div>
 
-      <div class="form-group d-flex flex-column justify-content-end">
-        <button type="submit" class="btn btn-primary">Entrar</button>
-        <label>Caso não possua cadastro, <router-link to="/login/user-registry">clique aqui!</router-link></label>
-      </div>
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input v-model="form.senha" type="password" class="form-control" id="senha">
+        </div>
+
+        <div class="form-group d-flex flex-column justify-content-end">
+          <button type="submit" class="btn btn-primary">Entrar</button>
+          <label>Caso não possua cadastro, <router-link to="/login/user-registry">clique aqui!</router-link></label>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -37,8 +39,36 @@ export default {
     return {
       form: {
         email: "",
-        password: ""
-      }
+        senha: ""
+      },
+      redirect: undefined
+    }
+  },
+  whatch: {
+    $route: {
+      handler: function(route) {
+        this.redirect = route.query && route.query.redirect
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    /**
+     * Realiza o login com os dados informados
+     */
+    submit() {
+      this.$store.dispatch("Login", this.form)
+        .then(() => {
+          this.$router.push({ path: this.redirect || "/" })
+        })
+        .catch((error) => {
+          if (error.response.status === 401
+            && error.response.data.title === "invalid_grant") {
+            this.$toasted.error("Falha ao autenticar: login ou senha incorretos.")
+          } else {
+            this.$toasted.error(error.response.data.detail)
+          }
+        })
     }
   }
 }
