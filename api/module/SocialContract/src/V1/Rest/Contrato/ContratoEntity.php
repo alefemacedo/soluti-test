@@ -28,7 +28,7 @@ class ContratoEntity {
      * a qual o Contrato Social é referente
      * 
      * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\Empresa\EmpresaEntity")
-     * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", onDelete="CASCADE")
      * 
      * @var SocialContract\V1\Rest\Empresa\EmpresaEntity
      */
@@ -58,7 +58,7 @@ class ContratoEntity {
      * ResponsabilidadeEntity que vinculam as instâncias
      * da entidade UsuarioEntity a uma instância de ContratoEntity
      * 
-     * @ORM\OneToMany(targetEntity="ResponsabilidadeEntity", mappedBy="contratoSocialId")
+     * @ORM\OneToMany(targetEntity="ResponsabilidadeEntity", mappedBy="contratoSocial")
      */
     private $responsaveis;
 

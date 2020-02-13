@@ -69,7 +69,7 @@ class UsuarioEntity implements UserInterface, ArraySerializableInterface {
      * a qual o Usuário é referente
      * 
      * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="usuario")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * 
      * @var SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity
      */

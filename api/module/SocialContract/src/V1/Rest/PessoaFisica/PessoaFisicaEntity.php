@@ -49,7 +49,7 @@ class PessoaFisicaEntity extends Pessoa {
      * da entidade PessoaFisicaEntity a uma instância de
      * ContratoEntity
      * 
-     * @ORM\OneToMany(targetEntity="SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity", mappedBy="pessoaId")
+     * @ORM\OneToMany(targetEntity="SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity", mappedBy="pessoa")
      */
     private $responsabilidades;
 
