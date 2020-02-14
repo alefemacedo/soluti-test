@@ -105,9 +105,9 @@ export default {
           if(response.data.hasUser) {
             this.$toasted.error("Já existe um usuário para esta pessoa!")
             this.$emit("change-route")
-          } else if (Object.prototype.hasOwnProperty.call(response.data, "_embbeded")
-            && response.data._embedded.person !== null) {
-            this.form.nome = response.data._embedded.person.nome
+          } else if (Object.prototype.hasOwnProperty.call(response.data, "_embedded")
+            && response.data._embedded.pessoa !== null) {
+            this.form.nome = response.data._embedded.pessoa.nome
           }
           this.showForm = true
         })

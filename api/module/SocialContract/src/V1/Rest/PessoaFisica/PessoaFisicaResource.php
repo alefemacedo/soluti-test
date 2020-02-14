@@ -55,7 +55,7 @@ class PessoaFisicaResource extends AbstractResourceListener
     public function fetch($id)
     {
         $return = [
-            'person' => null,
+            'pessoa' => null,
             'hasUser' => false,
             'message' => ''
         ];
@@ -65,7 +65,7 @@ class PessoaFisicaResource extends AbstractResourceListener
             if (!is_null($pessoa)) {
                 $return['hasUser'] = !is_null($pessoa->getUsuario());
                 $pessoa->setUsuario(null);
-                $return['person'] = $pessoa;
+                $return['pessoa'] = $pessoa;
             }
         } catch (\Exception $e) {
             return new ApiProblem(500, $e->getMessage());
@@ -82,7 +82,21 @@ class PessoaFisicaResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        $return = [];
+
+        try {
+            $pessoas = $this->mapper->fetchAll();
+            foreach ($pessoas as $pessoa) {
+                $return[] = [
+                    'value' => $pessoa->getId(),
+                    'text' => $pessoa->getNome() . ' - ' . $pessoa->getCpf()
+                ];
+            }
+        } catch (\Exception $e) {
+            return new ApiProblem(500, $e->getMessage());
+        }
+
+        return $return;
     }
 
     /**
