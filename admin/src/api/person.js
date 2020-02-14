@@ -6,3 +6,10 @@ export function fetchPerson(identifier) {
     method: "get"
   })
 }
+
+export function fetchAll() {
+  return request({
+    url: "/pessoa",
+    method: "get"
+  })
+}
