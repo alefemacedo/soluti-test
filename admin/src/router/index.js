@@ -70,6 +70,26 @@ export const constantRouterMap = [
         meta: { title: "users.registry.title", icon: "dashboard", noCache: true }
       }
     ]
+  },
+  {
+    path: "/company",
+    component: Layout,
+    redirect: "/company/index",
+    name: "companies",
+    children: [
+      {
+        path: "/company/index",
+        component: () => import("@/views/company/list"),
+        name: "companies.list",
+        meta: { title: "users.list.title", icon: "dashboard", noCache: true }
+      },
+      {
+        path: "/company/create",
+        component: () => import("@/views/company/create"),
+        name: "companies.create",
+        meta: { title: "users.registry.title", icon: "dashboard", noCache: true }
+      }
+    ]
   }
 ]
 
