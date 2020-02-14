@@ -13,7 +13,7 @@
             <b-nav-item to="/">Home</b-nav-item>
             <b-nav-item to="/user">Usuários</b-nav-item>
             <b-nav-item to="/social-contract" disabled>Contratos Sociais</b-nav-item>
-            <b-nav-item to="/company" disabled>Empresas</b-nav-item>
+            <b-nav-item to="/company">Empresas</b-nav-item>
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">
@@ -61,17 +61,7 @@ export default {
     }
 
     .app--body {
-      background-color: green;
-      .app--navbar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 190px;
-        @media (max-width: 769px) {
-          display: none;
-        }
-        background-color: red;
-      }
+
     }
 
     .app--footer {
