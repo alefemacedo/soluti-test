@@ -206,6 +206,7 @@ return [
             'SocialContract\\V1\\Rest\\Empresa\\Controller' => [
                 0 => 'application/vnd.social-contract.v1+json',
                 1 => 'application/json',
+                2 => 'multipart/form-data',
             ],
             'SocialContract\\V1\\Rest\\Contrato\\Controller' => [
                 0 => 'application/vnd.social-contract.v1+json',
@@ -286,6 +287,9 @@ return [
         'SocialContract\\V1\\Rest\\Usuario\\Controller' => [
             'input_filter' => 'SocialContract\\V1\\Rest\\Usuario\\Validator',
         ],
+        'SocialContract\\V1\\Rest\\Empresa\\Controller' => [
+            'input_filter' => 'SocialContract\\V1\\Rest\\Empresa\\Validator',
+        ],
     ],
     'input_filter_specs' => [
         'SocialContract\\V1\\Rest\\Usuario\\Validator' => [
@@ -355,6 +359,47 @@ return [
                 'name' => 'senha',
                 'description' => 'Senha do usuário',
                 'field_type' => 'string',
+            ],
+        ],
+        'SocialContract\\V1\\Rest\\Empresa\\Validator' => [
+            0 => [
+                'required' => false,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'nome',
+                'description' => 'Nome fantasia da empresa',
+                'field_type' => 'String',
+                'allow_empty' => true,
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe o CNPJ da empresa',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'cnpj',
+                'description' => 'CNPJ da empresa',
+                'field_type' => 'String',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe a Rasão Social da empresa',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'rasao_social',
+                'description' => 'Rasão Social da empresa',
+                'field_type' => 'String',
             ],
         ],
     ],

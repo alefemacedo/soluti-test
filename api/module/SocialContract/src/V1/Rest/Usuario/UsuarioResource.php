@@ -65,7 +65,7 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        die(var_dump(['parametros' => $this->getEvent()->getQueryParams()]));
+        // die(var_dump(['parametros' => $this->getEvent()->getQueryParams()]));
         $usuario = $this->mapper->fetch($id);
 
         return $usuario;
