@@ -2,7 +2,7 @@ import request from "@/utils/request"
 
 export function fetchAll(params) {
   return request({
-    url: "/usuario",
+    url: "/user",
     params,
     method: "get"
   })
@@ -10,7 +10,7 @@ export function fetchAll(params) {
 
 export function create(requestParams) {
   return request({
-    url: "/usuario/0",
+    url: "/user/0",
     data: requestParams,
     method: "post"
   })
