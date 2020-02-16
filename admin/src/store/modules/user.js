@@ -12,6 +12,7 @@ const user = {
   state: {
     token: getToken(),
     refreshToken: getRefreshToken(),
+    userId: null,
     isRefreshing: false,
   },
 
@@ -21,6 +22,9 @@ const user = {
     },
     SET_REFRESH_TOKEN: (state, refreshToken) => {
       state.refreshToken = refreshToken
+    },
+    SET_USER_ID: (state, id) => {
+      state.userId = id
     },
     START_TOKEN_REFRESH(state) {
       state.isRefreshing = true
@@ -39,7 +43,7 @@ const user = {
      */
     Login({ commit }, userData) {
       return new Promise((resolve, reject) => {
-        login({ username: userData.email, password: userData.senha })
+        login({ username: userData.email, password: userData.password })
           .then(response => {
             commit("SET_TOKEN", response.data.access_token)
             setToken(response.data.access_token)
@@ -58,14 +62,13 @@ const user = {
      * 
      * @param {*} param
      */
-    GetUserInfo({ state }) {
+    GetUserInfo({ state, commit }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(response => {
           if (!response.data) {
             reject("error")
           }
-          // const data = response.data
-
+          commit("SET_USER_ID", response.data.id)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -83,6 +86,7 @@ const user = {
       return new Promise((resolve) => {
         commit("SET_TOKEN", "")
         commit("SET_REFRESH_TOKEN", "")
+        commit("SET_USER_ID", null)
         removeToken()
         removeRefreshToken()
         resolve()
