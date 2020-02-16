@@ -4,7 +4,7 @@ export function login(userData) {
   return request({
     url: "/oauth",
     data: {
-      client_id: "testclient",
+      client_id: process.env.VUE_APP_CLIENT_ID,
       grant_type: "password",
       ...userData
     },
@@ -16,7 +16,7 @@ export function refreshToken(refreshToken) {
   return request({
     url: "/oauth",
     data: {
-      client_id: "testclient",
+      client_id: process.env.VUE_APP_CLIENT_ID,
       grant_type: "refresh_token",
       refresh_token: refreshToken
     },
@@ -26,7 +26,7 @@ export function refreshToken(refreshToken) {
 
 export function getUserInfo(token) {
   return request({
-    url: "/usuario/me",
+    url: "/user/me",
     params: {
       token
     },
