@@ -55,17 +55,17 @@ class PessoaFisicaResource extends AbstractResourceListener
     public function fetch($id)
     {
         $return = [
-            'pessoa' => null,
+            'person' => null,
             'hasUser' => false,
             'message' => ''
         ];
         try {
-            $pessoa = $this->mapper->fetch($id);
+            $person = $this->mapper->fetch($id);
 
-            if (!is_null($pessoa)) {
-                $return['hasUser'] = !is_null($pessoa->getUsuario());
-                $pessoa->setUsuario(null);
-                $return['pessoa'] = $pessoa;
+            if (!is_null($person)) {
+                $return['hasUser'] = !is_null($person->getUser());
+                $person->setUser(null);
+                $return['person'] = $person;
             }
         } catch (\Exception $e) {
             return new ApiProblem(500, $e->getMessage());
@@ -85,11 +85,11 @@ class PessoaFisicaResource extends AbstractResourceListener
         $return = [];
 
         try {
-            $pessoas = $this->mapper->fetchAll();
-            foreach ($pessoas as $pessoa) {
+            $people = $this->mapper->fetchAll();
+            foreach ($people as $person) {
                 $return[] = [
-                    'value' => $pessoa->getId(),
-                    'text' => $pessoa->getNome() . ' - ' . $pessoa->getCpf()
+                    'value' => $person->getId(),
+                    'text' => $person->getName() . ' - ' . $person->getCpf()
                 ];
             }
         } catch (\Exception $e) {
