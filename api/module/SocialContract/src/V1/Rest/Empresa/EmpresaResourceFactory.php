@@ -5,6 +5,6 @@ class EmpresaResourceFactory
 {
     public function __invoke($services)
     {
-        return new EmpresaResource();
+        return new EmpresaResource(new EmpresaMapper($services->get('doctrine.entitymanager.orm_default')));
     }
 }
