@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  *      "C" = "CotistaEntity",
  *      "A" = "AdministradorEntity"
  * })
- * @ORM\Table(name="responsability")
+ * @ORM\Table(name="responsabilities")
  */
 class ResponsabilidadeEntity {
 
@@ -36,24 +36,24 @@ class ResponsabilidadeEntity {
      * de modo a vincular uma instância de Contrato Social
      * a uma instância de Pessoa Física
      * 
-     * @ORM\ManyToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="responsabilidades")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="responsabilities")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * 
      * @var int
      */
-    private $pessoa;
+    private $person;
 
     /**
      * Refência para a tabela de ContratoEntity 
      * de modo a vincular uma instância de Contrato Social
      * a uma instância de Usuário
      * 
-     * @ORM\ManyToOne(targetEntity="ContratoEntity", inversedBy="responsaveis")
-     * @ORM\JoinColumn(name="social_contract_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="ContratoEntity", inversedBy="responsible")
+     * @ORM\JoinColumn(name="social_contract_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * 
      * @var int
      */
-    private $contratoSocial;
+    private $socialContract;
     
 
     /**
@@ -71,23 +71,23 @@ class ResponsabilidadeEntity {
      * 
      * @return int
      */ 
-    public function getPessoa()
+    public function getPerson()
     {
-        return $this->pessoa;
+        return $this->person;
     }
 
     /**
      * Define o valor da referência da
      * tabela de PessoaFisicaEntity
      *
-     * @param int $pessoa Referência para a tabela de
+     * @param int $person Referência para a tabela de
      * PessoaFisicaEntity
      * 
      * @return  self
      */ 
-    public function setPessoa($pessoa)
+    public function setPerson($person)
     {
-        $this->pessoa = $pessoa;
+        $this->person = $person;
 
         return $this;
     }
@@ -97,22 +97,22 @@ class ResponsabilidadeEntity {
      * 
      * @return int
      */ 
-    public function getContratoSocial()
+    public function getSocialContract()
     {
-        return $this->contratoSocial;
+        return $this->socialContract;
     }
 
     /**
      * Define o valor da referência da tabela de ContratoEntity
      * 
-     * @param int $contratoSocial Referência para a
+     * @param int $socialContract Referência para a
      * tabela de ContratoEntity
      * 
      * @return  self
      */ 
-    public function setContratoSocial($contratoSocial)
+    public function setSocialContract($socialContract)
     {
-        $this->contratoSocial = $contratoSocial;
+        $this->socialContract = $socialContract;
 
         return $this;
     }
