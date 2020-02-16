@@ -29,7 +29,7 @@ return [
             'social-contract.rest.usuario' => [
                 'type' => 'Segment',
                 'options' => [
-                    'route' => '/usuario[/:usuario_id]',
+                    'route' => '/user[/:user_id]',
                     'defaults' => [
                         'controller' => 'SocialContract\\V1\\Rest\\Usuario\\Controller',
                     ],
@@ -38,7 +38,7 @@ return [
             'social-contract.rest.empresa' => [
                 'type' => 'Segment',
                 'options' => [
-                    'route' => '/empresa[/:empresa_id]',
+                    'route' => '/company[/:company_id]',
                     'defaults' => [
                         'controller' => 'SocialContract\\V1\\Rest\\Empresa\\Controller',
                     ],
@@ -47,7 +47,7 @@ return [
             'social-contract.rest.contrato' => [
                 'type' => 'Segment',
                 'options' => [
-                    'route' => '/contrato[/:contrato_id]',
+                    'route' => '/contract[/:contract_id]',
                     'defaults' => [
                         'controller' => 'SocialContract\\V1\\Rest\\Contrato\\Controller',
                     ],
@@ -56,7 +56,7 @@ return [
             'social-contract.rest.pessoa-fisica' => [
                 'type' => 'Segment',
                 'options' => [
-                    'route' => '/pessoa[/:pessoa_id]',
+                    'route' => '/person[/:person_id]',
                     'defaults' => [
                         'controller' => 'SocialContract\\V1\\Rest\\PessoaFisica\\Controller',
                     ],
@@ -76,14 +76,13 @@ return [
         'SocialContract\\V1\\Rest\\Usuario\\Controller' => [
             'listener' => \SocialContract\V1\Rest\Usuario\UsuarioResource::class,
             'route_name' => 'social-contract.rest.usuario',
-            'route_identifier_name' => 'usuario_id',
-            'collection_name' => 'usuarios',
+            'route_identifier_name' => 'user_id',
+            'collection_name' => 'users',
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'PUT',
-                3 => 'DELETE',
-                4 => 'POST',
+                2 => 'DELETE',
+                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
@@ -102,14 +101,13 @@ return [
         'SocialContract\\V1\\Rest\\Empresa\\Controller' => [
             'listener' => \SocialContract\V1\Rest\Empresa\EmpresaResource::class,
             'route_name' => 'social-contract.rest.empresa',
-            'route_identifier_name' => 'empresa_id',
-            'collection_name' => 'empresas',
+            'route_identifier_name' => 'company_id',
+            'collection_name' => 'companies',
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'PUT',
-                3 => 'DELETE',
-                4 => 'POST',
+                2 => 'DELETE',
+                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
@@ -125,14 +123,13 @@ return [
         'SocialContract\\V1\\Rest\\Contrato\\Controller' => [
             'listener' => \SocialContract\V1\Rest\Contrato\ContratoResource::class,
             'route_name' => 'social-contract.rest.contrato',
-            'route_identifier_name' => 'contrato_id',
-            'collection_name' => 'contratos',
+            'route_identifier_name' => 'contract_id',
+            'collection_name' => 'contracts',
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'PUT',
-                3 => 'DELETE',
-                4 => 'POST',
+                2 => 'DELETE',
+                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
@@ -148,14 +145,13 @@ return [
         'SocialContract\\V1\\Rest\\PessoaFisica\\Controller' => [
             'listener' => \SocialContract\V1\Rest\PessoaFisica\PessoaFisicaResource::class,
             'route_name' => 'social-contract.rest.pessoa-fisica',
-            'route_identifier_name' => 'pessoa_id',
-            'collection_name' => 'pessoas',
+            'route_identifier_name' => 'person_id',
+            'collection_name' => 'people',
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'PUT',
-                3 => 'DELETE',
-                4 => 'POST',
+                2 => 'DELETE',
+                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
@@ -206,10 +202,12 @@ return [
             'SocialContract\\V1\\Rest\\Empresa\\Controller' => [
                 0 => 'application/vnd.social-contract.v1+json',
                 1 => 'application/json',
+                2 => 'multipart/form-data',
             ],
             'SocialContract\\V1\\Rest\\Contrato\\Controller' => [
                 0 => 'application/vnd.social-contract.v1+json',
                 1 => 'application/json',
+                2 => 'multipart/form-data',
             ],
             'SocialContract\\V1\\Rest\\PessoaFisica\\Controller' => [
                 0 => 'application/vnd.social-contract.v1+json',
@@ -222,53 +220,53 @@ return [
             \SocialContract\V1\Rest\Usuario\UsuarioEntity::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.usuario',
-                'route_identifier_name' => 'usuario_id',
+                'route_identifier_name' => 'user_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
                 'max_depth' => 1,
             ],
             \SocialContract\V1\Rest\Usuario\UsuarioCollection::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.usuario',
-                'route_identifier_name' => 'usuario_id',
+                'route_identifier_name' => 'user_id',
                 'is_collection' => true,
             ],
             \SocialContract\V1\Rest\Contrato\ContratoEntity::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.contrato',
-                'route_identifier_name' => 'contrato_id',
+                'route_identifier_name' => 'contract_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
                 'max_depth' => 1,
             ],
             \SocialContract\V1\Rest\Contrato\ContratoCollection::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.contrato',
-                'route_identifier_name' => 'contrato_id',
+                'route_identifier_name' => 'contract_id',
                 'is_collection' => true,
             ],
             \SocialContract\V1\Rest\Empresa\EmpresaEntity::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.empresa',
-                'route_identifier_name' => 'empresa_id',
+                'route_identifier_name' => 'company_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
                 'max_depth' => 1,
             ],
             \SocialContract\V1\Rest\Empresa\EmpresaCollection::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.empresa',
-                'route_identifier_name' => 'empresa_id',
+                'route_identifier_name' => 'company_id',
                 'is_collection' => true,
             ],
             \SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.pessoa-fisica',
-                'route_identifier_name' => 'pessoa_id',
+                'route_identifier_name' => 'person_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
                 'max_depth' => 1,
             ],
             \SocialContract\V1\Rest\PessoaFisica\PessoaFisicaCollection::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.pessoa-fisica',
-                'route_identifier_name' => 'pessoa_id',
+                'route_identifier_name' => 'person_id',
                 'is_collection' => true,
             ],
         ],
@@ -285,6 +283,15 @@ return [
     'zf-content-validation' => [
         'SocialContract\\V1\\Rest\\Usuario\\Controller' => [
             'input_filter' => 'SocialContract\\V1\\Rest\\Usuario\\Validator',
+        ],
+        'SocialContract\\V1\\Rest\\Empresa\\Controller' => [
+            'input_filter' => 'SocialContract\\V1\\Rest\\Empresa\\Validator',
+        ],
+        'SocialContract\\V1\\Rest\\Contrato\\Controller' => [
+            'input_filter' => 'SocialContract\\V1\\Rest\\Contrato\\Validator',
+        ],
+        'SocialContract\\V1\\Rest\\PessoaFisica\\Controller' => [
+            'input_filter' => 'SocialContract\\V1\\Rest\\PessoaFisica\\Validator',
         ],
     ],
     'input_filter_specs' => [
@@ -331,15 +338,14 @@ return [
                     0 => [
                         'name' => \Zend\Validator\NotEmpty::class,
                         'options' => [
-                            'message' => 'Por favor informar o nome da pessoa',
+                            'message' => 'Por favor informe seu nome',
                         ],
                     ],
                 ],
                 'filters' => [],
-                'name' => 'nome',
+                'name' => 'name',
                 'description' => 'Nome da pessoa a qual o usuário é vinculado',
-                'field_type' => 'string',
-                'allow_empty' => false,
+                'field_type' => 'String',
             ],
             3 => [
                 'required' => true,
@@ -347,14 +353,214 @@ return [
                     0 => [
                         'name' => \Zend\Validator\NotEmpty::class,
                         'options' => [
-                            'message' => 'Por favor informe uma senha para o usuário',
+                            'message' => 'Por favor informe a sua senha',
                         ],
                     ],
                 ],
                 'filters' => [],
-                'name' => 'senha',
-                'description' => 'Senha do usuário',
-                'field_type' => 'string',
+                'name' => 'password',
+                'description' => 'Senha do usuário para login',
+                'field_type' => 'String',
+            ],
+        ],
+        'SocialContract\\V1\\Rest\\Empresa\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe o CNPJ da empresa',
+                        ],
+                    ],
+                    1 => [
+                        'name' => \Zend\Validator\StringLength::class,
+                        'options' => [
+                            'max' => '14',
+                            'min' => '14',
+                            'message' => 'Por favor informe um CNPJ válido. Deve conter exatamente 14 caracteres',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'cnpj',
+                'description' => 'CNPJ da empresa',
+                'field_type' => 'String',
+                'continue_if_empty' => false,
+            ],
+            1 => [
+                'required' => false,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'name',
+                'description' => 'Nome fantasia da empresa',
+                'field_type' => 'String',
+                'allow_empty' => true,
+            ],
+            2 => [
+                'required' => false,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\File\MimeType::class,
+                        'options' => [
+                            'mimeType' => 'application/pdf',
+                            'message' => 'O arquivo informado não possui um tipo permitido. Por favor, informe um arquivo do tipo PDF (application/pdf)',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\File\RenameUpload::class,
+                        'options' => [
+                            'randomize' => true,
+                            'target' => 'data/Files',
+                        ],
+                    ],
+                ],
+                'name' => 'file',
+                'description' => 'Arquivo PDF representando o Contrato Social da empresa',
+                'field_type' => 'File',
+                'type' => \Zend\InputFilter\FileInput::class,
+                'allow_empty' => true,
+            ],
+            3 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe a rasão social da empresa',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'corporate_name',
+                'description' => 'Rasão Social da empresa',
+                'field_type' => 'String',
+            ],
+            4 => [
+                'required' => false,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'responsible',
+                'description' => 'Responsáveis pela empresa de acordo com o Contrato Social',
+                'field_type' => 'Object',
+                'allow_empty' => true,
+            ],
+        ],
+        'SocialContract\\V1\\Rest\\Contrato\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor insira o arquivo PDF do contrato social',
+                        ],
+                    ],
+                    1 => [
+                        'name' => \Zend\Validator\File\MimeType::class,
+                        'options' => [
+                            'mimeType' => 'application/pdf',
+                            'message' => 'O arquivo selecionado é do tipo incorreto. Por favor selecione um arquivo do tipo PDF (application/pdf)',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\File\RenameUpload::class,
+                        'options' => [
+                            'randomize' => true,
+                            'target' => 'data/Files',
+                        ],
+                    ],
+                ],
+                'name' => 'file',
+                'description' => 'Arquivo PDF representando o Contrato Social da empresa',
+                'field_type' => 'File',
+                'allow_empty' => false,
+                'type' => \Zend\InputFilter\FileInput::class,
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe os dados dos responsáveis descritos no Contrato Social',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'responsible',
+                'description' => 'Coleção de objetos com os dados dos responsáveis descritos no Contrato Social, como ID da pessoa e sua responsabilidade',
+                'field_type' => 'Object',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe o ID da empresa a qual o Contrato Social é referente',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'company_id',
+                'description' => 'Identificador (ID do banco de dados) da empresa a qual o Contrato Social é referente',
+                'field_type' => 'Integer',
+                'allow_empty' => false,
+            ],
+            3 => [
+                'required' => false,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'validated',
+                'description' => 'Define se a instância em questão já foi validada',
+                'field_type' => 'Boolean',
+                'allow_empty' => true,
+            ],
+        ],
+        'SocialContract\\V1\\Rest\\PessoaFisica\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe o nome da pessoa',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'name',
+                'description' => 'Nome da pessoa',
+                'field_type' => 'String',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\NotEmpty::class,
+                        'options' => [
+                            'message' => 'Por favor informe o CPF da pessoa',
+                        ],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'cpf',
+                'description' => 'CPF que identifica a pessoa',
+                'field_type' => 'String',
+            ],
+            2 => [
+                'required' => false,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'user',
+                'description' => 'Objeto contendo os dados do usuário desta pessoa (pode não ter)',
+                'field_type' => 'Object',
+                'allow_empty' => true,
             ],
         ],
     ],
@@ -369,7 +575,7 @@ return [
                     'DELETE' => false,
                 ],
                 'entity' => [
-                    'GET' => false,
+                    'GET' => true,
                     'POST' => false,
                     'PUT' => true,
                     'PATCH' => true,
@@ -388,6 +594,38 @@ return [
                     'GET' => false,
                     'POST' => false,
                     'PUT' => true,
+                    'PATCH' => true,
+                    'DELETE' => true,
+                ],
+            ],
+            'SocialContract\\V1\\Rest\\Empresa\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => false,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => true,
+                    'PATCH' => true,
+                    'DELETE' => true,
+                ],
+            ],
+            'SocialContract\\V1\\Rest\\Contrato\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => false,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
                     'PATCH' => true,
                     'DELETE' => true,
                 ],

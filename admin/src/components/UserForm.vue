@@ -3,10 +3,10 @@
     <div v-if="showForm" class="form--container__form">
       <form class="border rounded p-2" @submit.prevent="submitForm">
         <s-validated-input
-          v-model="form.nome"
+          v-model="form.name"
           label="Nome"
           placeholder="Por favor informe seu nome"
-          id="nome"
+          id="name"
           :messages="error"/>
         
         <s-validated-input
@@ -25,10 +25,10 @@
           :messages="error"/>
 
         <s-validated-input
-          v-model="form.senha"
+          v-model="form.password"
           label="Senha"
           placeholder="Defina sua senha"
-          id="senha"
+          id="password"
           type="password"
           :messages="error"/>
 
@@ -89,10 +89,10 @@ export default {
      */
     initializeForm() {
       this.form = {
-        nome: "",
+        name: "",
         cpf: "",
         email: "",
-        senha: ""
+        password: ""
       }
     },
     /**
@@ -105,9 +105,9 @@ export default {
           if(response.data.hasUser) {
             this.$toasted.error("Já existe um usuário para esta pessoa!")
             this.$emit("change-route")
-          } else if (Object.prototype.hasOwnProperty.call(response.data, "_embbeded")
+          } else if (Object.prototype.hasOwnProperty.call(response.data, "_embedded")
             && response.data._embedded.person !== null) {
-            this.form.nome = response.data._embedded.person.nome
+            this.form.name = response.data._embedded.person.name
           }
           this.showForm = true
         })

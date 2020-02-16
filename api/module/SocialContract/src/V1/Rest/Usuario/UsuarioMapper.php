@@ -6,15 +6,16 @@ use Doctrine\ORM\EntityManager;
 use SocialContract\V1\Rest\Interfaces\MapperInterface;
 use SocialContract\V1\Rest\PessoaFisica\PessoaFisicaMapper;
 use Zend\Crypt\Password\Bcrypt;
+use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
 
 class UsuarioMapper implements MapperInterface {
     
     protected $entityManager;
-    protected $pessoaMapper;
+    protected $personMapper;
 
     public function __construct(EntityManager $entityManager) {
         $this->entityManager = $entityManager;
-        $this->pessoaMapper = new PessoaFisicaMapper($this->entityManager);
+        $this->personMapper = new PessoaFisicaMapper($this->entityManager);
     }
 
     /**
@@ -25,30 +26,63 @@ class UsuarioMapper implements MapperInterface {
      * @return Entity
      */
     public function create($data) {
-        $pessoa = $this->pessoaMapper->fetch($data->cpf);
+        $messages = [];
+        $person = $this->personMapper->fetch($data->cpf);
         $connection = $this->entityManager->getConnection();
         $bcrypt = new Bcrypt();
 
-        if (!is_null($pessoa) && !is_null($pessoa->getUsuario())) {
+        if (!is_null($person) && !is_null($person->getUser())) {
             throw new \Exception("Já existe um usuário cadastrado para esta pessoa!");
-        } else if (is_null($pessoa)) {
-            $pessoaId = $this->pessoaMapper->create($data);
+        } else if (is_null($person)) {
+            $personId = $this->personMapper->create($data);
         } else {
-            $pessoaId = $pessoa->getId();
+            $personId = $person->getId();
+        }
+
+        $this->verifyEmailUnique($data->email, $messages);
+        if (sizeof($messages) > 0) {
+            throw new UniqueConstraintViolationException(json_encode($messages));
         }
 
         $connection->beginTransaction();
         try {
             $sql = 'INSERT INTO users (person_id, email, password) VALUES (?, ?, ?)';
             $stmt = $connection->prepare($sql);
-            $stmt->bindValue(1, $pessoaId);
+            $stmt->bindValue(1, $personId);
             $stmt->bindValue(2, $data->email);
-            $stmt->bindValue(3, $bcrypt->create($data->senha));
+            $stmt->bindValue(3, $bcrypt->create($data->password));
             $stmt->execute();
             $connection->commit();
         } catch (\Exception $e) {
             $connection->rollBack();
             throw $e;
+        }
+    }
+
+    /**
+     * Verifica se o email/login informado para o usuário
+     * é único, ou seja, não existe nenhum outro usuário
+     * com este email cadastrado no banco de dados
+     * 
+     * @param String $email
+     * @return void
+     */
+    public function verifyEmailUnique($email, &$messages) {
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity', 'u');
+        $rsm->addFieldResult('u', 'id', 'id');
+
+        $sql =  'SELECT u.id FROM users as u WHERE u.email = ?';
+
+        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $email);
+
+        $user = $query->getOneOrNullResult();
+
+        if (!is_null($user)) {
+            $messages['email'] = [
+                'uniqueError' => "O e-email informado já pertence a um usuário cadastrado!"
+            ];
         }
     }
 
@@ -63,19 +97,19 @@ class UsuarioMapper implements MapperInterface {
         $rsm->addEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity', 'u');
         $rsm->addFieldResult('u', 'id', 'id');
         $rsm->addFieldResult('u', 'email', 'email');
-        $rsm->addFieldResult('u', 'password', 'senha');
-        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity' , 'p', 'u', 'pessoa');
+        $rsm->addFieldResult('u', 'password', 'password');
+        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity' , 'p', 'u', 'person');
         $rsm->addFieldResult('p', 'person_id', 'id');
         $rsm->addFieldResult('p', 'cpf', 'cpf');
-        $rsm->addFieldResult('p', 'name', 'nome');
+        $rsm->addFieldResult('p', 'name', 'name');
 
         $sql =  'SELECT u.id, u.email, u.password, p.id AS person_id, p.cpf, p.name FROM users as u LEFT JOIN people as p ' .
                 'ON u.person_id = p.id;';
         $query = $this->entityManager->createNativeQuery($sql, $rsm);
 
-        $usuarios = $query->getResult();
+        $users = $query->getResult();
 
-        return $usuarios;
+        return $users;
     }
 
     /**
@@ -90,20 +124,49 @@ class UsuarioMapper implements MapperInterface {
         $rsm->addEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity', 'u');
         $rsm->addFieldResult('u', 'id', 'id');
         $rsm->addFieldResult('u', 'email', 'email');
-        $rsm->addFieldResult('u', 'password', 'senha');
-        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity' , 'p', 'u', 'pessoa');
+        $rsm->addFieldResult('u', 'password', 'password');
+        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity' , 'p', 'u', 'person');
         $rsm->addFieldResult('p', 'person_id', 'id');
         $rsm->addFieldResult('p', 'cpf', 'cpf');
-        $rsm->addFieldResult('p', 'name', 'nome');
+        $rsm->addFieldResult('p', 'name', 'name');
 
         $sql =  'SELECT u.id, u.email, u.password, p.id AS person_id, p.cpf, p.name FROM users as u LEFT JOIN people as p ' .
                 'ON u.person_id = p.id WHERE u.id = ?';
         $query = $this->entityManager->createNativeQuery($sql, $rsm);
         $query->setParameter(1, $id);
 
-        $usuario = $query->getOneOrNullResult();
+        $user = $query->getOneOrNullResult();
 
-        return $usuario;
+        return $user;
+    }
+
+    /**
+     * Busca uma instância de uma entidade Usuário no banco
+     * de dados de acordo com um Access Token
+     * 
+     * @param string $token 
+     * @return Entity
+     */
+    public function fetchByToken($token) {
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity', 'u');
+        $rsm->addFieldResult('u', 'id', 'id');
+        $rsm->addFieldResult('u', 'email', 'email');
+        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity' , 'p', 'u', 'person');
+        $rsm->addFieldResult('p', 'person_id', 'id');
+        $rsm->addFieldResult('p', 'cpf', 'cpf');
+        $rsm->addFieldResult('p', 'name', 'name');
+
+        $sql =  'SELECT u.id, u.email, p.id AS person_id, p.cpf, p.name FROM users as u ' .
+                'LEFT JOIN people as p ON u.person_id = p.id ' .
+                'LEFT JOIN AccessToken_OAuth2 as at ON u.id = at.user_id ' .
+                'WHERE at.accessToken = ?';
+        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $token);
+
+        $user = $query->getOneOrNullResult();
+
+        return $user;
     }
 
     /**

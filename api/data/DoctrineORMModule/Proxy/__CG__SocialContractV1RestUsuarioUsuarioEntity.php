@@ -66,10 +66,10 @@ class UsuarioEntity extends \SocialContract\V1\Rest\Usuario\UsuarioEntity implem
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'id', 'client', 'accessToken', 'authorizationCode', 'refreshToken', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'email', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'senha', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'pessoa'];
+            return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'id', 'client', 'accessToken', 'authorizationCode', 'refreshToken', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'email', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'password', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'person', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'socialContracts'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'id', 'client', 'accessToken', 'authorizationCode', 'refreshToken', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'email', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'senha', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'pessoa'];
+        return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'id', 'client', 'accessToken', 'authorizationCode', 'refreshToken', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'email', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'password', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'person', '' . "\0" . 'SocialContract\\V1\\Rest\\Usuario\\UsuarioEntity' . "\0" . 'socialContracts'];
     }
 
     /**
@@ -238,45 +238,45 @@ class UsuarioEntity extends \SocialContract\V1\Rest\Usuario\UsuarioEntity implem
     /**
      * {@inheritDoc}
      */
-    public function getSenha()
+    public function getPassword()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSenha', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPassword', []);
 
-        return parent::getSenha();
+        return parent::getPassword();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setSenha(string $senha)
+    public function setPassword(string $password)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSenha', [$senha]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPassword', [$password]);
 
-        return parent::setSenha($senha);
+        return parent::setPassword($password);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getPessoa()
+    public function getPerson()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPessoa', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPerson', []);
 
-        return parent::getPessoa();
+        return parent::getPerson();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setPessoa($pessoa)
+    public function setPerson($person)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPessoa', [$pessoa]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPerson', [$person]);
 
-        return parent::setPessoa($pessoa);
+        return parent::setPerson($person);
     }
 
     /**

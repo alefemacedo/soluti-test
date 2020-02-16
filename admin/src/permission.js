@@ -1,4 +1,5 @@
 import router from "./router"
+import store from "@/store"
 import { getToken } from "@/utils/auth"
 
 let isLoginRoute = function (route) {
@@ -11,7 +12,24 @@ router.beforeEach((to, from, next) => {
     if (isLoginRoute(to.path)) {
       next({ path: "/" })
     } else {
-      next()
+      if(!store.getters.userId) {
+        store.dispatch("GetUserInfo")
+          .then(() => {
+            next({ ...to, replace: true })
+          })
+          .catch((err) => {
+            if (err.response.status !== 401 || !getToken()) {
+              store.dispatch("FedLogOut").then(() => {
+                this.$toasted.error(err || "Falha na verificação, por favor logue novamente")
+                next({ path: "/" })
+              })
+            } else {
+              next({ ...to, replace: true })
+            }
+          })
+      } else {
+        next()
+      }      
     }
   } else {
     /* não possui token */

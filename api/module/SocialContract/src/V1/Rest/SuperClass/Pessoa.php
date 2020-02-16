@@ -19,7 +19,7 @@ class Pessoa {
      * 
      * @var string
      */
-    private $nome;
+    private $name;
 
 
     /**
@@ -27,22 +27,22 @@ class Pessoa {
      * 
      * @return string
      */ 
-    public function getNome()
+    public function getName()
     {
-        return $this->nome;
+        return $this->name;
     }
 
     /**
      * Define a propriedade nome
      * 
-     * @param string $nome Nome da instância de
+     * @param string $name Nome da instância de
      * Pessoa
      * 
      * @return  self
      */ 
-    public function setNome($nome)
+    public function setName($name)
     {
-        $this->nome = $nome;
+        $this->name = $name;
 
         return $this;
     }

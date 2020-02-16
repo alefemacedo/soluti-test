@@ -19,8 +19,8 @@
         </div>
 
         <div class="form-group">
-          <label for="senha">Senha</label>
-          <input v-model="form.senha" type="password" class="form-control" id="senha">
+          <label for="password">Senha</label>
+          <input v-model="form.password" type="password" class="form-control" id="password">
         </div>
 
         <div class="form-group d-flex flex-column justify-content-end">
@@ -39,7 +39,7 @@ export default {
     return {
       form: {
         email: "",
-        senha: ""
+        password: ""
       },
       redirect: undefined
     }
@@ -65,6 +65,9 @@ export default {
           if (error.response.status === 401
             && error.response.data.title === "invalid_grant") {
             this.$toasted.error("Falha ao autenticar: login ou senha incorretos.")
+          } if(error.response.status === 400
+            && error.response.data.title === "invalid_client") {
+            this.$toasted.error("Falha ao autenticar: esse usuário não existe.")
           } else {
             this.$toasted.error(error.response.data.detail)
           }

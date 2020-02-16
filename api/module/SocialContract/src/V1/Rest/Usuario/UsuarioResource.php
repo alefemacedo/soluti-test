@@ -4,6 +4,7 @@ namespace SocialContract\V1\Rest\Usuario;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 use Doctrine\ORM\EntityManager;
+use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
 
 class UsuarioResource extends AbstractResourceListener
 {
@@ -28,6 +29,13 @@ class UsuarioResource extends AbstractResourceListener
         try {
             $this->mapper->create($data);
             $return['message'] = 'Usuário cadastrado com sucesso!';
+
+        } catch (UniqueConstraintViolationException $e) {
+            return new ApiProblemResponse(
+                new ApiProblem(422, 'Failed Validation', null, null, [
+                    'validation_messages' => json_decode($e->getMessage())
+                ])
+            );
         } catch (\Exception $e) {
             return new ApiProblem(500, $e->getMessage());
         }
@@ -65,10 +73,14 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        die(var_dump(['parametros' => $this->getEvent()->getQueryParams()]));
-        $usuario = $this->mapper->fetch($id);
+        if($id == 'me') {
+            $token = $this->getEvent()->getQueryParams()->get('token');
+            $user = $this->mapper->fetchByToken($token);
+        } else {
+            $user = $this->mapper->fetch($id);
+        }
 
-        return $usuario;
+        return $user;
     }
 
     /**
@@ -79,9 +91,9 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {      
-        $usuarios = $this->mapper->fetchAll();
+        $users = $this->mapper->fetchAll();
 
-        return $usuarios;
+        return $users;
     }
 
     /**

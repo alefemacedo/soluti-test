@@ -6,6 +6,7 @@ namespace SocialContract\V1\Rest\Usuario;
 use ZF\OAuth2\Doctrine\Entity\UserInterface;
 use SocialContract\V1\Rest\SuperClass\PessoaFisica;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\ArrayCollection;
 use Zend\Hydrator\ClassMethods;
 use Zend\Stdlib\ArraySerializableInterface;
 
@@ -62,28 +63,36 @@ class UsuarioEntity implements UserInterface, ArraySerializableInterface {
      * 
      * @var string
      */
-    private $senha;
+    private $password;
 
     /**
      * Referência para a instância na tabela de Pessoa
      * a qual o Usuário é referente
      * 
-     * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="usuario")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="user")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * 
      * @var SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity
      */
-    private $pessoa;
+    private $person;
 
-    // public function toArray() {
-    //     return (new ClassMethods(false))->extract($this);
-    // }
+    /**
+     * Colleção de instâncias de Constrato Social que representam
+     * todos os contratos sociais que o usuário já fez upload
+     * 
+     * @ORM\OneToMany(targetEntity="SocialContract\V1\Rest\Contrato\ContratoEntity", mappedBy="user")
+     */
+    private $socialContracts;
+
+    public function __construct() {
+        $this->socialContracts = new ArrayCollection();
+    }
 
     public function getArrayCopy() {
 
         return [
             'id' => $this->getId(),
-            'password' => $this->getSenha(),
+            'password' => $this->getPassword(),
             'email' => $this->getEmail()
         ];
     }
@@ -96,8 +105,7 @@ class UsuarioEntity implements UserInterface, ArraySerializableInterface {
                     $this->setEmail($value);
                     break;
                 case 'password':
-                    var_dump($value);
-                    $this->setSenha($value);
+                    $this->setPassword($value);
                     break;
                 default:
                     break;
@@ -146,21 +154,21 @@ class UsuarioEntity implements UserInterface, ArraySerializableInterface {
      *
      * @return  string
      */ 
-    public function getSenha()
+    public function getPassword()
     {
-        return $this->senha;
+        return $this->password;
     }
 
     /**
      * Define a propriedade senha
      *
-     * @param  string  $senha Senha do Usuário
+     * @param  string  $password Senha do Usuário
      *
      * @return  self
      */ 
-    public function setSenha(string $senha)
+    public function setPassword(string $password)
     {
-        $this->senha = $senha;
+        $this->password = $password;
 
         return $this;
     }
@@ -170,22 +178,22 @@ class UsuarioEntity implements UserInterface, ArraySerializableInterface {
      *
      * @return  SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity
      */ 
-    public function getPessoa()
+    public function getPerson()
     {
-        return $this->pessoa;
+        return $this->person;
     }
 
     /**
      * Define a Pessoa Física a qual o Usuário é referente
      *
-     * @param  SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity  $pessoa
+     * @param  SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity  $person
      * Instância de Pessoa Física a qual o Usuário é referente
      *
      * @return  self
      */ 
-    public function setPessoa($pessoa)
+    public function setPerson($person)
     {
-        $this->pessoa = $pessoa;
+        $this->person = $person;
 
         return $this;
     }
