@@ -66,10 +66,10 @@ class PessoaFisicaEntity extends \SocialContract\V1\Rest\PessoaFisica\PessoaFisi
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'id', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'cpf', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'usuario', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'responsabilidades'];
+            return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'id', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'cpf', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'user', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'responsabilities'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'id', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'cpf', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'usuario', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'responsabilidades'];
+        return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'id', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'cpf', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'user', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'responsabilities'];
     }
 
     /**
@@ -216,45 +216,45 @@ class PessoaFisicaEntity extends \SocialContract\V1\Rest\PessoaFisica\PessoaFisi
     /**
      * {@inheritDoc}
      */
-    public function getUsuario()
+    public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsuario', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', []);
 
-        return parent::getUsuario();
+        return parent::getUser();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setUsuario($usuario)
+    public function setUser($user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsuario', [$usuario]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$user]);
 
-        return parent::setUsuario($usuario);
+        return parent::setUser($user);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getNome()
+    public function getName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNome', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
 
-        return parent::getNome();
+        return parent::getName();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setNome($nome)
+    public function setName($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNome', [$nome]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
 
-        return parent::setNome($nome);
+        return parent::setName($name);
     }
 
 }

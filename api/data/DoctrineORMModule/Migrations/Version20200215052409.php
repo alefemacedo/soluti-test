@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200212173818 extends AbstractMigration
+final class Version20200215052409 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -23,8 +23,8 @@ final class Version20200212173818 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE responsability (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, social_contract_id INT DEFAULT NULL, type VARCHAR(255) NOT NULL, INDEX IDX_5AA1C46F217BBB47 (person_id), INDEX IDX_5AA1C46F50D210D3 (social_contract_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE social_contract (id INT AUTO_INCREMENT NOT NULL, company_id INT DEFAULT NULL, file_path VARCHAR(600) NOT NULL, validated TINYINT(1) DEFAULT \'0\' NOT NULL, UNIQUE INDEX UNIQ_67BEBC75979B1AD6 (company_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE company (id INT AUTO_INCREMENT NOT NULL, cnpj VARCHAR(11) NOT NULL, corporate_name VARCHAR(255) NOT NULL, fancy_name VARCHAR(255) DEFAULT NULL, UNIQUE INDEX UNIQ_4FBF094FC8C6906B (cnpj), UNIQUE INDEX UNIQ_4FBF094F5915169C (corporate_name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE social_contracts (id INT AUTO_INCREMENT NOT NULL, company_id INT DEFAULT NULL, file_path VARCHAR(600) NOT NULL, validated TINYINT(1) DEFAULT \'0\' NOT NULL, UNIQUE INDEX UNIQ_3B06F404979B1AD6 (company_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE companies (id INT AUTO_INCREMENT NOT NULL, cnpj VARCHAR(11) NOT NULL, corporate_name VARCHAR(255) NOT NULL, fancy_name VARCHAR(255) DEFAULT NULL, UNIQUE INDEX UNIQ_8244AA3AC8C6906B (cnpj), UNIQUE INDEX UNIQ_8244AA3A5915169C (corporate_name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE people (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, cpf VARCHAR(11) NOT NULL, UNIQUE INDEX UNIQ_28166A263E3E11F0 (cpf), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE users (id BIGINT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_1483A5E9E7927C74 (email), UNIQUE INDEX UNIQ_1483A5E9217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE AccessToken_OAuth2 (id BIGINT AUTO_INCREMENT NOT NULL, client_id BIGINT NOT NULL, user_id BIGINT DEFAULT NULL, accessToken LONGTEXT DEFAULT NULL, expires DATETIME DEFAULT NULL, INDEX IDX_C092BBF419EB6921 (client_id), INDEX IDX_C092BBF4A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
@@ -39,10 +39,10 @@ final class Version20200212173818 extends AbstractMigration
         $this->addSql('CREATE TABLE AuthorizationCodeToScope_OAuth2 (scope_id BIGINT NOT NULL, authorization_code_id BIGINT NOT NULL, INDEX IDX_1EA6C7E682B5931 (scope_id), INDEX IDX_1EA6C7E847B7245 (authorization_code_id), PRIMARY KEY(scope_id, authorization_code_id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE RefreshTokenToScope_OAuth2 (scope_id BIGINT NOT NULL, refresh_token_id BIGINT NOT NULL, INDEX IDX_9F46C12E682B5931 (scope_id), INDEX IDX_9F46C12EF765F60E (refresh_token_id), PRIMARY KEY(scope_id, refresh_token_id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE AccessTokenToScope_OAuth2 (scope_id BIGINT NOT NULL, access_token_id BIGINT NOT NULL, INDEX IDX_49A2A53D682B5931 (scope_id), INDEX IDX_49A2A53D2CCB2688 (access_token_id), PRIMARY KEY(scope_id, access_token_id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE responsability ADD CONSTRAINT FK_5AA1C46F217BBB47 FOREIGN KEY (person_id) REFERENCES people (id)');
-        $this->addSql('ALTER TABLE responsability ADD CONSTRAINT FK_5AA1C46F50D210D3 FOREIGN KEY (social_contract_id) REFERENCES social_contract (id)');
-        $this->addSql('ALTER TABLE social_contract ADD CONSTRAINT FK_67BEBC75979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id)');
-        $this->addSql('ALTER TABLE users ADD CONSTRAINT FK_1483A5E9217BBB47 FOREIGN KEY (person_id) REFERENCES people (id)');
+        $this->addSql('ALTER TABLE responsability ADD CONSTRAINT FK_5AA1C46F217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE responsability ADD CONSTRAINT FK_5AA1C46F50D210D3 FOREIGN KEY (social_contract_id) REFERENCES social_contracts (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE social_contracts ADD CONSTRAINT FK_3B06F404979B1AD6 FOREIGN KEY (company_id) REFERENCES companies (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE users ADD CONSTRAINT FK_1483A5E9217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE AccessToken_OAuth2 ADD CONSTRAINT FK_C092BBF419EB6921 FOREIGN KEY (client_id) REFERENCES Client_OAuth2 (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE AccessToken_OAuth2 ADD CONSTRAINT FK_C092BBF4A76ED395 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE AuthorizationCode_OAuth2 ADD CONSTRAINT FK_7DED2FDD19EB6921 FOREIGN KEY (client_id) REFERENCES Client_OAuth2 (id) ON DELETE CASCADE');
@@ -69,7 +69,7 @@ final class Version20200212173818 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE responsability DROP FOREIGN KEY FK_5AA1C46F50D210D3');
-        $this->addSql('ALTER TABLE social_contract DROP FOREIGN KEY FK_67BEBC75979B1AD6');
+        $this->addSql('ALTER TABLE social_contracts DROP FOREIGN KEY FK_3B06F404979B1AD6');
         $this->addSql('ALTER TABLE responsability DROP FOREIGN KEY FK_5AA1C46F217BBB47');
         $this->addSql('ALTER TABLE users DROP FOREIGN KEY FK_1483A5E9217BBB47');
         $this->addSql('ALTER TABLE AccessToken_OAuth2 DROP FOREIGN KEY FK_C092BBF4A76ED395');
@@ -91,8 +91,8 @@ final class Version20200212173818 extends AbstractMigration
         $this->addSql('ALTER TABLE RefreshTokenToScope_OAuth2 DROP FOREIGN KEY FK_9F46C12E682B5931');
         $this->addSql('ALTER TABLE AccessTokenToScope_OAuth2 DROP FOREIGN KEY FK_49A2A53D682B5931');
         $this->addSql('DROP TABLE responsability');
-        $this->addSql('DROP TABLE social_contract');
-        $this->addSql('DROP TABLE company');
+        $this->addSql('DROP TABLE social_contracts');
+        $this->addSql('DROP TABLE companies');
         $this->addSql('DROP TABLE people');
         $this->addSql('DROP TABLE users');
         $this->addSql('DROP TABLE AccessToken_OAuth2');
