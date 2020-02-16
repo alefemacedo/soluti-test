@@ -1,8 +1,12 @@
 <template>
   <div class="reponsability--item form-inline w-100 h-100 p-2 justify-content-between">
     <div class="form-group mb-2">
-      <label class="mr-2" for="pessoa">Pessoa</label>
-      <select v-model="value.pessoaId" class="form-control" id="pessoa">
+      <label class="mr-2" :for="prop + '[person_id]'">Pessoa</label>
+      <select
+        v-model="value.person_id"
+        :class="{ 'is-invalid':  hasError('person_id') }"
+        class="form-control"
+        :id="prop + '[person_id]'">
         <option value="" selected>Selecione o responsável</option>
         <option
           v-for="(person, index) in people"
@@ -10,11 +14,18 @@
           {{ person.text }}
         </option>
       </select>
+      <div v-for="(message, index) in getErrorMessages('person_id')" :key="index" class="invalid-feedback">
+        {{ message }}
+      </div>
     </div>
 
     <div class="form-group mx-lg-3 mb-2">
-      <label class="mr-2" for="responsabilidade">Responsabilidade</label>
-      <select v-model="value.tipo" class="form-control" id="responsabilidade">
+      <label class="mr-2" :for="prop + '[type]'">Responsabilidade</label>
+      <select
+        v-model="value.type"
+        :class="{ 'is-invalid':  hasError('type') }"
+        class="form-control"
+        :id="prop + '[type]'">
         <option value="" selected>Selecione a responsabilidade</option>
         <option
           v-for="(responsability, index) in responsabilities"
@@ -22,6 +33,9 @@
           {{ responsability.text }}
         </option>
       </select>
+      <div v-for="(message, index) in getErrorMessages('type')" :key="index" class="invalid-feedback">
+        {{ message }}
+      </div>
     </div>
 
     <div class="form-group mx-xl-3 mb-2">
@@ -34,18 +48,21 @@
 
 <script>
 export default {
-  components: {
-  },
   props: {
+    prop: {
+      type: String,
+      required: true,
+      default: "identifier"
+    },
     value: {
       type: Object,
       required: true,
       default() {
         return {
           id: "",
-          pessoaId: "",
+          person_id: "",
           type: "",
-          posicao: 0
+          position: 0
         }
       }
     },
@@ -54,6 +71,13 @@ export default {
       required: true,
       default() {
         return []
+      }
+    },
+    error: {
+      type: Object,
+      required: true,
+      default() {
+        return {}
       }
     }
   },
@@ -70,6 +94,21 @@ export default {
   methods: {
     emitRemove() {
       this.$emit("delete", this.value)
+    },
+    /**
+     * Verifica se há mensagens de erro para a propriedade
+     * a qual o input está vinculada
+     */
+    hasError(property) {
+      return Object.prototype.hasOwnProperty.call(this.error, this.prop)
+        && Object.prototype.hasOwnProperty.call(this.error[this.prop], property)
+    },
+    /**
+     * Retorna as mensagens de erro da propriedade em questão
+     */
+    getErrorMessages(property) {
+      return Object.prototype.hasOwnProperty.call(this.error, this.prop)
+        ? this.error[this.prop][property] : {}
     }
   }
 }
