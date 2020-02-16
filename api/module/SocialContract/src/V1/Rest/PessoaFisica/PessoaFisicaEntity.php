@@ -37,11 +37,11 @@ class PessoaFisicaEntity extends Pessoa {
      * Referência a instância da tabela de Usuario
      * relacionada a esta entidade de Pessoa Física
      * 
-     * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\Usuario\UsuarioEntity", mappedBy="pessoa")
+     * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\Usuario\UsuarioEntity", mappedBy="person")
      * 
      * @var SocialContract\V1\Rest\Usuario\UsuarioEntity
      */
-    private $usuario;
+    private $user;
 
     /**
      * Colleção de instâncias das subclasses da entidade
@@ -49,15 +49,12 @@ class PessoaFisicaEntity extends Pessoa {
      * da entidade PessoaFisicaEntity a uma instância de
      * ContratoEntity
      * 
-     * @ORM\OneToMany(targetEntity="SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity", mappedBy="pessoa")
+     * @ORM\OneToMany(targetEntity="SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity", mappedBy="person")
      */
-    private $responsabilidades;
+    private $responsabilities;
 
     public function __construct() {
-        $this->responsabilidades = new ArrayCollection();
-        // if(!empty($data)) {
-        //     (new ClassMethods(false))->hydrate($data, $this);
-        // }
+        $this->responsabilities = new ArrayCollection();
     }
 
     /**
@@ -101,24 +98,24 @@ class PessoaFisicaEntity extends Pessoa {
      *
      * @return  SocialContract\V1\Rest\Usuario\UsuarioEntity
      */ 
-    public function getUsuario()
+    public function getUser()
     {
-        return $this->usuario;
+        return $this->user;
     }
 
     /**
      * Define a instância da tabela de Usuário relacionada a esta
      * entidade de Pessoa Física
      *
-     * @param  SocialContract\V1\Rest\Usuario\UsuarioEntity  $usuario
+     * @param  SocialContract\V1\Rest\Usuario\UsuarioEntity  $user
      * Instância da tabela de Usuário relacionada a esta entidade de 
      * Pessoa Física
      *
      * @return  self
      */ 
-    public function setUsuario($usuario)
+    public function setUser($user)
     {
-        $this->usuario = $usuario;
+        $this->user = $user;
 
         return $this;
     }
