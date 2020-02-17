@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <div class="companies--list_title">
-      <h1 class="display-4">Empresas</h1>
+    <div class="contracts--list_title">
+      <h1 class="display-4">Contratos Sociais</h1>
     </div>
 
-    <div class="companies--list_filter-form">
+    <div class="contracts--list_filter-form">
 			<div class="form-group">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -28,13 +28,13 @@
       :fields="tableFields"
       :actions="tableActions"
       :pagination="pagination"
-      @edit="editCompany"/>
+      @show="showContract"/>
   </div>
 </template>
 
 <script>
 import PaginatedTable from "@/components/PaginatedTable"
-import { fetchAll } from "@/api/company"
+import { fetchAll } from "@/api/contract"
 
 export default {
   components: {
@@ -54,18 +54,38 @@ export default {
       delayFilter: null,
       tableData: [],
       tableFields: [
-        { key: "corporateName", label: "Rasão Social" },
-        { key: "name", label: "Nome Fantasia" },
-        { key: "cnpj", label: "CNPJ" },
+        { key: "filename", label: "Arquivo" },
+        { key: "size", label: "Tamanho" },
+        {
+          key: "user_name",
+          label: "Usuário",
+          formatter: (value, key, item) => {
+            return item._embedded.user._embedded.person.name
+          }
+        },
+        { 
+          key: "corporate_name", 
+          label: "Rasão Social",
+          formatter: (value, key, item) => {
+            return item._embedded.company.corporateName
+          }
+        },
+        { 
+          key: "cnpj", 
+          label: "CNPJ",
+          formatter: (value, key, item) => {
+            return item._embedded.company.cnpj
+          }
+        },
         { key: "actions", label: "Ações" }
       ],
       tableActions: [
-        { event: "edit", icon: "far fa-edit" }
+        { event: "show", icon: "far fa-eye" }
       ]
     }
   },
   mounted() {
-    this.getPaginatedCompanies()
+    this.getPaginatedContracts()
   },
   watch: {
     "pagination.currentPage": function () {
@@ -73,7 +93,7 @@ export default {
     }
   },
   methods: {
-    async getPaginatedCompanies() {
+    async getPaginatedContracts() {
       const params = {
         page: this.pagination.currentPage,
         cnpj: this.filter.type === "cnpj" ? this.filter.value : "",
@@ -85,7 +105,7 @@ export default {
           if (Object.prototype.hasOwnProperty.call(response.data, "_embedded")) {
             this.pagination.totalRows = response.data.total_items
             this.pagination.perPage = response.data.page_size
-            this.tableData = [...response.data._embedded.companies]
+            this.tableData = [...response.data._embedded.contracts]
           }
         })
         .catch((error) => {
@@ -93,17 +113,18 @@ export default {
         })
     },
     /**
-     * Redireciona para a view que irá permitir alterar
-     * os dados da empresa
+     * Redireciona para a view que irá mostrar os dados
+     * do contrato social, como o arquivo PDF renderizado
+     * e os responsáveis descrito neste
      */
-    editCompany(company) {
-      this.$router.push({ path: "/company/edit/" + company.id })
+    showContract(contract) {
+      this.$router.push({ path: "/contract/show/" + contract.id })
     },
     /**
      * Identifica uma mudança de paginação
      */
     handleCurrentChange() {
-      this.getPaginatedCompanies()
+      this.getPaginatedContracts()
     },
     /**
      * Identifica uma filtragem dos dados

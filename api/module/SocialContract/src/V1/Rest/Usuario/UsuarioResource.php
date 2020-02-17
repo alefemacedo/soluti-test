@@ -2,9 +2,11 @@
 namespace SocialContract\V1\Rest\Usuario;
 
 use ZF\ApiProblem\ApiProblem;
+use ZF\ApiProblem\ApiProblemResponse;
 use ZF\Rest\AbstractResourceListener;
 use Doctrine\ORM\EntityManager;
 use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
+use SocialContract\V1\Rest\Exception\NotFoundException;
 
 class UsuarioResource extends AbstractResourceListener
 {
@@ -105,7 +107,27 @@ class UsuarioResource extends AbstractResourceListener
      */
     public function patch($id, $data)
     {
-        return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
+        $return = [
+            'message' => ''
+        ];
+
+        try {
+            $this->mapper->update($id, $data);
+            $return['message'] = "Perfil alterado com sucesso.";
+
+        } catch (UniqueConstraintViolationException $e) {
+            return new ApiProblemResponse(
+                new ApiProblem(422, 'Failed Validation', null, null, [
+                    'validation_messages' => json_decode($e->getMessage())
+                ])
+            );
+        } catch(NotFoundException $e) {
+            return new ApiProblem(404, $e->getMessage());
+        } catch (\Exception $e) {
+            return new ApiProblem(501, $e->getMessage());
+        }
+
+        return $return;
     }
 
     /**

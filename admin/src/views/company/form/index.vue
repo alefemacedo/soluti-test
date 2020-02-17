@@ -44,9 +44,16 @@
 <script>
 import ValidatedInput from "@/components/ValidatedInput"
 import SocialContractForm from "@/components/SocialContractForm"
-import { create } from "@/api/company"
+import { create, fetch, update } from "@/api/company"
 
 export default {
+  props: {
+    companyId: {
+      type: String,
+      required: false,
+      default: "0"
+    }
+  },
   components: {
     "s-validated-input": ValidatedInput,
     "s-social-contract-form": SocialContractForm
@@ -58,7 +65,11 @@ export default {
     }
   },
   beforeMount() {
-    this.initializeForm()
+    if (parseInt(this.companyId) !== 0) {
+      this.getCompanyData()
+    } else {
+      this.initializeForm()
+    }
   },
   computed: {
     socialContractComputed: {
@@ -87,6 +98,36 @@ export default {
       }
     },
     /**
+     * Busca os dados de uma empresa no backend
+     * de acordo com o ID passado no prop da rota
+     */
+    getCompanyData() {
+      fetch(this.companyId)
+        .then((response) => {
+          if(Object.prototype.hasOwnProperty.call(response.data, "_embedded")) {
+            this.form = {
+              name: response.data._embedded.company.name,
+              corporate_name: response.data._embedded.company.corporateName,
+              cnpj: response.data._embedded.company.cnpj,
+              social_contract: {
+                file: "",
+                userFile: "",
+                responsible: {}
+              }
+            }
+
+            // Verifica se a instância retornada possui definições
+            // dos responsáveis descritos no contrato social
+            if (Object.prototype.hasOwnProperty.call(response.data, "responsible")) {
+              this.form.social_contract.responsible = { ...response.data.responsible }
+            }
+          }          
+        })
+        .catch((error) => {
+          this.$toasted.error(error.response.data.detail)
+        })
+    },
+    /**
      * Limpa o formulário e redireciona para a página
      * anterior
      */
@@ -107,19 +148,35 @@ export default {
       formData.append("file", this.form.social_contract.file)
       formData.append("userFile", this.form.social_contract.userFile)
 
-      create(formData)
-        .then((response) => {
-          this.$toasted.success(response.data.message)
-          this.$router.go(-1)
-        })
-        .catch((error) => {
-          if (error.response.status === 422) {
-            this.error = { ...error.response.data.validation_messages }
-            this.$toasted.error("Por favor corrija os erros no formulário!")
-          } else {
-            this.$toasted.error(error.response.data.detail)
-          }
-        })
+      if (parseInt(this.companyId) == 0) {
+        create(formData)
+          .then((response) => {
+            this.$toasted.success(response.data.message)
+            this.$router.go(-1)
+          })
+          .catch((error) => {
+            if (error.response.status === 422) {
+              this.error = { ...error.response.data.validation_messages }
+              this.$toasted.error("Por favor corrija os erros no formulário!")
+            } else {
+              this.$toasted.error(error.response.data.detail)
+            }
+          })
+      } else {
+        update(formData, this.companyId)
+          .then((response) => {
+            this.$toasted.success(response.data.message)
+            this.$router.go(-1)
+          })
+          .catch((error) => {
+            if (error.response.status === 422) {
+              this.error = { ...error.response.data.validation_messages }
+              this.$toasted.error("Por favor corrija os erros no formulário!")
+            } else {
+              this.$toasted.error(error.response.data.detail)
+            }
+          })
+      }
     }
   }
 }

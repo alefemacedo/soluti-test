@@ -51,10 +51,10 @@ class PessoaFisicaEntity extends Pessoa {
      * 
      * @ORM\OneToMany(targetEntity="SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity", mappedBy="person")
      */
-    private $responsabilities;
+    private $responsibilities;
 
     public function __construct() {
-        $this->responsabilities = new ArrayCollection();
+        $this->responsibilities = new ArrayCollection();
     }
 
     /**

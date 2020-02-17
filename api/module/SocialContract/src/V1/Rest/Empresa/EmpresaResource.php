@@ -6,6 +6,7 @@ use ZF\ApiProblem\ApiProblemResponse;
 use ZF\Rest\AbstractResourceListener;
 use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
 use SocialContract\V1\Rest\Exception\ValidationException;
+use SocialContract\V1\Rest\Exception\NotFoundException;
 
 class EmpresaResource extends AbstractResourceListener {
 
@@ -79,7 +80,19 @@ class EmpresaResource extends AbstractResourceListener {
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        $return = [];
+        try {
+            $return = $this->mapper->fetch($id);
+
+            if (is_null($return['company'])) throw new NotFoundException("Não foi encontrada nenhuma instância de Empresa para o ID informado.");
+
+        } catch (NotFoundException $e) {
+            return new ApiProblem(404, $e->getMessage());
+        } catch (\Exception $e) {
+            return new ApiProblem(500, $e->getMessage());
+        }
+
+        return $return;
     }
 
     /**
@@ -90,7 +103,8 @@ class EmpresaResource extends AbstractResourceListener {
      */
     public function fetchAll($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        $companies = $this->mapper->fetchAll($params);
+        return $companies;
     }
 
     /**
@@ -102,7 +116,27 @@ class EmpresaResource extends AbstractResourceListener {
      */
     public function patch($id, $data)
     {
-        return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
+        $return = [
+            'message' => ''
+        ];
+
+        try {
+            $this->mapper->update($id, $data);
+            $return['message'] = "Empresa alterada com sucesso.";
+
+        } catch (UniqueConstraintViolationException $e) {
+            return new ApiProblemResponse(
+                new ApiProblem(422, 'Failed Validation', null, null, [
+                    'validation_messages' => json_decode($e->getMessage())
+                ])
+            );
+        } catch(NotFoundException $e) {
+            return new ApiProblem(404, $e->getMessage());
+        } catch (\Exception $e) {
+            return new ApiProblem(501, $e->getMessage());
+        }
+
+        return $return;
     }
 
     /**

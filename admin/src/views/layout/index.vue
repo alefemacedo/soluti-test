@@ -11,18 +11,23 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item to="/">Home</b-nav-item>
-            <b-nav-item to="/user">Usuários</b-nav-item>
-            <b-nav-item to="/social-contract" disabled>Contratos Sociais</b-nav-item>
-            <b-nav-item to="/company">Empresas</b-nav-item>
+            <b-nav-item to="/contract">Contratos Sociais</b-nav-item>
+            <b-nav-item-dropdown right>
+              <template v-slot:button-content>
+                Empresas
+              </template>
+              <b-dropdown-item to="/company">Listar</b-dropdown-item>
+              <b-dropdown-item to="/company/create">Cadastrar</b-dropdown-item>
+            </b-nav-item-dropdown>
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">
             <b-nav-item-dropdown right>
               <template v-slot:button-content>
-                <em>User</em>
+                <em>{{ $store.getters.user }}</em>
               </template>
-              <b-dropdown-item href="#">Profile</b-dropdown-item>
-              <b-dropdown-item @click="logout">Sign Out</b-dropdown-item>
+              <b-dropdown-item to="/user/profile">Perfil</b-dropdown-item>
+              <b-dropdown-item @click="logout">Sair</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>

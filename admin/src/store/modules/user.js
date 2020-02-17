@@ -13,6 +13,7 @@ const user = {
     token: getToken(),
     refreshToken: getRefreshToken(),
     userId: null,
+    userName: "Usuário",
     isRefreshing: false,
   },
 
@@ -25,6 +26,9 @@ const user = {
     },
     SET_USER_ID: (state, id) => {
       state.userId = id
+    },
+    SET_USER_NAME: (state, name) => {
+      state.userName = name
     },
     START_TOKEN_REFRESH(state) {
       state.isRefreshing = true
@@ -69,6 +73,7 @@ const user = {
             reject("error")
           }
           commit("SET_USER_ID", response.data.id)
+          commit("SET_USER_NAME", response.data._embedded.person.name)
           resolve(response)
         }).catch(error => {
           reject(error)

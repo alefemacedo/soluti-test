@@ -1,0 +1,19 @@
+<?php
+return [
+    'doctrine' => [
+        'connection' => [
+            'orm_default' => [
+                'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
+                'params' => [
+                    'host'     => 'localhost',
+                    'port'     => '3306',
+                    'user'     => 'user_test',
+                    'password' => '',
+                    'dbname'   => 'soluti_test',
+                    'charset' => 'utf8',
+                    'driverOptions' => ['SET NAMES utf8']
+                ]
+            ]
+        ]
+    ]
+];

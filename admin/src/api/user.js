@@ -15,3 +15,11 @@ export function create(requestParams) {
     method: "post"
   })
 }
+
+export function update(requestParams, id) {
+  return request({
+    url: "/user/" + id,
+    data: requestParams,
+    method: "PATCH"
+  })
+}

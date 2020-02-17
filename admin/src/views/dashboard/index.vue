@@ -1,5 +1,9 @@
 <template>
-  <div class="container app--dashboard">Dashboard</div>
+  <div class="container app--dashboard">
+    <h1 class="display-3">
+      Bem Vindo !
+    </h1>
+  </div>
 </template>
 
 <script>

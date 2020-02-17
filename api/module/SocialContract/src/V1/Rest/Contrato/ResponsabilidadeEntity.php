@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  *      "C" = "CotistaEntity",
  *      "A" = "AdministradorEntity"
  * })
- * @ORM\Table(name="responsabilities")
+ * @ORM\Table(name="responsibilities")
  */
 class ResponsabilidadeEntity {
 
@@ -36,7 +36,7 @@ class ResponsabilidadeEntity {
      * de modo a vincular uma instância de Contrato Social
      * a uma instância de Pessoa Física
      * 
-     * @ORM\ManyToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="responsabilities")
+     * @ORM\ManyToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="responsibilities")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * 
      * @var int
@@ -115,5 +115,24 @@ class ResponsabilidadeEntity {
         $this->socialContract = $socialContract;
 
         return $this;
+    }
+
+    /**
+     * Retorna o valor do discriminador para a instância da
+     * entidade ResponsabilidadeEntity ou suas subclasses
+     * 
+     * @param SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity $responsiblity
+     * @return String 
+     */
+    public function getResponsibilityType() {
+        $types = [
+            "SocialContract\V1\Rest\Contrato\AdministradorEntity" => "A",
+            "SocialContract\V1\Rest\Contrato\CotistaEntity" => "C",
+            "SocialContract\V1\Rest\Contrato\SocioEntity" => "S",
+            "SocialContract\V1\Rest\Contrato\ResponsavelLegalEntity" => "RL",
+            "SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity" => "R",
+        ];
+
+        return $types[get_class($this)];
     }
 }

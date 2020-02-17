@@ -88,10 +88,7 @@ return [
                 0 => 'GET',
                 1 => 'POST',
             ],
-            'collection_query_whitelist' => [
-                0 => 'filter',
-                1 => 'pageNumber',
-            ],
+            'collection_query_whitelist' => [],
             'page_size' => 25,
             'page_size_param' => null,
             'entity_class' => \SocialContract\V1\Rest\Usuario\UsuarioEntity::class,
@@ -113,7 +110,11 @@ return [
                 0 => 'GET',
                 1 => 'POST',
             ],
-            'collection_query_whitelist' => [],
+            'collection_query_whitelist' => [
+                0 => 'page',
+                1 => 'corporate_name',
+                2 => 'cnpj',
+            ],
             'page_size' => 25,
             'page_size_param' => null,
             'entity_class' => \SocialContract\V1\Rest\Empresa\EmpresaEntity::class,
@@ -135,8 +136,12 @@ return [
                 0 => 'GET',
                 1 => 'POST',
             ],
-            'collection_query_whitelist' => [],
-            'page_size' => 25,
+            'collection_query_whitelist' => [
+                0 => 'page',
+                1 => 'cnpj',
+                2 => 'corporate_name',
+            ],
+            'page_size' => '25',
             'page_size_param' => null,
             'entity_class' => \SocialContract\V1\Rest\Contrato\ContratoEntity::class,
             'collection_class' => \SocialContract\V1\Rest\Contrato\ContratoCollection::class,
@@ -208,6 +213,7 @@ return [
                 0 => 'application/vnd.social-contract.v1+json',
                 1 => 'application/json',
                 2 => 'multipart/form-data',
+                3 => 'text/html',
             ],
             'SocialContract\\V1\\Rest\\PessoaFisica\\Controller' => [
                 0 => 'application/vnd.social-contract.v1+json',
@@ -217,6 +223,13 @@ return [
     ],
     'zf-hal' => [
         'metadata_map' => [
+            \Doctrine\ORM\PersistentCollection::class => [
+                'hydrator' => 'ArraySerializable',
+                'entity_identifier_name' => 'id',
+                'route_name' => 'social-contract.rest.contrato',
+                'route_identifier_name' => 'contract_id',
+                'isCollection' => true,
+            ],
             \SocialContract\V1\Rest\Usuario\UsuarioEntity::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'social-contract.rest.usuario',
@@ -235,7 +248,14 @@ return [
                 'route_name' => 'social-contract.rest.contrato',
                 'route_identifier_name' => 'contract_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
-                'max_depth' => 1,
+                'max_depth' => 4,
+            ],
+            \SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity::class => [
+                'entity_identifier_name' => 'id',
+                'route_name' => 'social-contract.rest.contrato',
+                'route_identifier_name' => 'contract_id',
+                'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
+                'max_depth' => 2,
             ],
             \SocialContract\V1\Rest\Contrato\ContratoCollection::class => [
                 'entity_identifier_name' => 'id',
@@ -248,7 +268,7 @@ return [
                 'route_name' => 'social-contract.rest.empresa',
                 'route_identifier_name' => 'company_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
-                'max_depth' => 1,
+                'max_depth' => 2,
             ],
             \SocialContract\V1\Rest\Empresa\EmpresaCollection::class => [
                 'entity_identifier_name' => 'id',
@@ -277,6 +297,24 @@ return [
             'object_manager' => 'doctrine.entitymanager.orm_default',
             'by_value' => true,
             'strategies' => [],
+            'use_generated_hydrator' => true,
+        ],
+        'SocialContract\\V1\\Rest\\Contrato\\ContratoHydrator' => [
+            'entity_class' => \SocialContract\V1\Rest\Contrato\ContratoEntity::class,
+            'object_manager' => 'doctrine.entitymanager.orm_default',
+            'by_value' => true,
+            'strategies' => [
+                'responsible' => 'ZF\\Doctrine\\Hydrator\\Strategy\\CollectionExtract',
+            ],
+            'use_generated_hydrator' => true,
+        ],
+        'SocialContract\\V1\\Rest\\Contrato\\ResponsabilidadeHydrator' => [
+            'entity_class' => \SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity::class,
+            'object_manager' => 'doctrine.entitymanager.orm_default',
+            'by_value' => true,
+            'strategies' => [
+                'socialContract' => 'ZF\\Doctrine\\Hydrator\\Strategy\\EntityLink',
+            ],
             'use_generated_hydrator' => true,
         ],
     ],
@@ -353,14 +391,15 @@ return [
                     0 => [
                         'name' => \Zend\Validator\NotEmpty::class,
                         'options' => [
-                            'message' => 'Por favor informe a sua senha',
+                            'message' => 'Por favor defina a senha para o usuário',
                         ],
                     ],
                 ],
                 'filters' => [],
                 'name' => 'password',
-                'description' => 'Senha do usuário para login',
+                'description' => 'Senha da instância de Usuário',
                 'field_type' => 'String',
+                'allow_empty' => true,
             ],
         ],
         'SocialContract\\V1\\Rest\\Empresa\\Validator' => [
@@ -445,6 +484,15 @@ return [
                 'name' => 'responsible',
                 'description' => 'Responsáveis pela empresa de acordo com o Contrato Social',
                 'field_type' => 'Object',
+                'allow_empty' => true,
+            ],
+            5 => [
+                'required' => false,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'userFile',
+                'description' => 'Identificador do usuário que realizou o último upload de arquivo para o contrato social da empresa',
+                'field_type' => 'String',
                 'allow_empty' => true,
             ],
         ],
