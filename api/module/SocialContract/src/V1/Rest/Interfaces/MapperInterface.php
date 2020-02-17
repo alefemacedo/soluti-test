@@ -30,7 +30,7 @@ interface MapperInterface {
      * 
      * @return Collection
      */
-    public function fetchAll();
+    public function fetchAll($params = []);
 
     /**
      * Atualiza uma instância de uma entidade no banco
