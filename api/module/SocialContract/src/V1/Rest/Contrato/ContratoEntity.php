@@ -88,7 +88,7 @@ class ContratoEntity {
      * ResponsabilidadeEntity que vinculam as instâncias
      * da entidade UsuarioEntity a uma instância de ContratoEntity
      * 
-     * @ORM\OneToMany(targetEntity="ResponsabilidadeEntity", mappedBy="socialContract")
+     * @ORM\OneToMany(targetEntity="ResponsabilidadeEntity", mappedBy="socialContract", fetch="EAGER")
      */
     private $responsible;
 
@@ -254,6 +254,28 @@ class ContratoEntity {
     public function setFilename($filename)
     {
         $this->filename = $filename;
+
+        return $this;
+    }
+
+    /**
+     * Retorna a colleção de instâncias das subclasses da
+     * entidade ResponsabilidadeEntity
+     */ 
+    public function getResponsible()
+    {
+        return $this->responsible;
+    }
+
+    /**
+     * Define o valor para a colleção de instâncias
+     * das subclasses da entidade ResponsabilidadeEntity
+     *
+     * @return  self
+     */ 
+    public function setResponsible($responsible)
+    {
+        $this->responsible = $responsible;
 
         return $this;
     }

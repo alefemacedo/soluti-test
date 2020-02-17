@@ -82,4 +82,28 @@ class EmpresaEntity extends PessoaJuridica {
 
         return $this;
     }
+
+    /**
+     * Retorna o nome fantasia da empresa
+     *
+     * @return  string
+     */ 
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Define o nome fantasia da empresa
+     *
+     * @param  string  $name  Nome fantasia da empresa
+     *
+     * @return  self
+     */ 
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
 }
