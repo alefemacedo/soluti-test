@@ -1,6 +1,6 @@
 <template>
   <div class="social-contract--form m-2">
-    <s-responsability-item
+    <s-responsibility-item
       v-for="(item, index) in responsibleComputed"
       :key="index"
       :value="item"
@@ -16,12 +16,12 @@
 </template>
 
 <script>
-import ResponsabilityItem from "./ResponsabilityItem"
+import ResponsibilityItem from "./ResponsibilityItem"
 import { fetchAll } from "@/api/person"
 
 export default {
   components: {
-    "s-responsability-item": ResponsabilityItem
+    "s-responsibility-item": ResponsibilityItem
   },
   props: {
     value: {
@@ -48,6 +48,12 @@ export default {
     this.fetchAllPeople()
   },
   mounted() {
+    // Inicializa o formulário com um item vazio
+    if (Object.keys(this.value).length === 0) {
+      this.handleAdd()
+    }
+  },
+  updated() {
     // Inicializa o formulário com um item vazio
     if (Object.keys(this.value).length === 0) {
       this.handleAdd()

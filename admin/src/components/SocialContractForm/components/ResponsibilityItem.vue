@@ -28,9 +28,9 @@
         :id="prop + '[type]'">
         <option value="" selected>Selecione a responsabilidade</option>
         <option
-          v-for="(responsability, index) in responsabilities"
-          :key="index" :value="responsability.value">
-          {{ responsability.text }}
+          v-for="(responsibility, index) in responsibilities"
+          :key="index" :value="responsibility.value">
+          {{ responsibility.text }}
         </option>
       </select>
       <div v-for="(message, index) in getErrorMessages('type')" :key="index" class="invalid-feedback">
@@ -83,7 +83,7 @@ export default {
   },
   data() {
     return {
-      responsabilities: [
+      responsibilities: [
         { value: "S", text: "Sócio" },
         { value: "C", text: "Cotista" },
         { value: "A", text: "Administrador" },
