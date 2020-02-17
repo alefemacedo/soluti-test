@@ -47,7 +47,7 @@ class PessoaFisicaMapper implements MapperInterface {
      * @param string $id 
      * @return Entity
      */
-    public function fetchAll() {
+    public function fetchAll($params = []) {
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity', 'p');
         $rsm->addFieldResult('p', 'id', 'id');
@@ -90,6 +90,33 @@ class PessoaFisicaMapper implements MapperInterface {
         $query = $this->entityManager->createNativeQuery($sql, $rsm);
         $query->setParameter(1, $id);
         $query->setParameter(2, $id);
+
+        $person = $query->getOneOrNullResult();
+
+        return $person;
+    }
+
+    /**
+     * Retorna uma instância da entidade Pesoa Física
+     * do banco de dados de acordo com o ID da instância
+     * de usuário vinculada à ela
+     * 
+     * @return SocialContract\V1\Rest\PessoaFisica
+     */
+    public function fetchByUser($userId) {
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity', 'p');
+        $rsm->addFieldResult('p', 'id', 'id');
+        $rsm->addFieldResult('p', 'name', 'name');
+        $rsm->addFieldResult('p', 'cpf', 'cpf');
+        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity' , 'u', 'p', 'user');
+        $rsm->addFieldResult('u', 'user_id', 'id');
+        $rsm->addFieldResult('u', 'email', 'email');
+
+        $sql =  'SELECT p.id, p.cpf, p.name, u.id AS user_id, u.email FROM people AS p ' .
+                'LEFT JOIN users as u ON u.person_id = p.id WHERE u.id=?';
+        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $userId);
 
         $person = $query->getOneOrNullResult();
 
