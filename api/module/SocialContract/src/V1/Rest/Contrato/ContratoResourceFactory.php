@@ -5,6 +5,6 @@ class ContratoResourceFactory
 {
     public function __invoke($services)
     {
-        return new ContratoResource();
+        return new ContratoResource(new ContratoMapper($services->get('doctrine.entitymanager.orm_default')));
     }
 }

@@ -7,6 +7,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use SocialContract\V1\Rest\Exception\ValidationException;
 use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
 use SocialContract\V1\Rest\Contrato\ContratoMapper;
+use Zend\Paginator\Adapter\ArrayAdapter;
 
 class EmpresaMapper implements MapperInterface {
     protected $entityManager;
@@ -31,9 +32,7 @@ class EmpresaMapper implements MapperInterface {
         $this->verifyCorporateNameUnique($data->corporate_name, $messages);
         $this->verifyCnpjUnique($data->cnpj, $messages);
         
-        if (sizeof($messages) > 0) {
-            throw new UniqueConstraintViolationException(json_encode($messages));
-        }
+        if (sizeof($messages) > 0) throw new UniqueConstraintViolationException(json_encode($messages));
 
         // Cadastra a empresa no banco de dados
         $connection->beginTransaction();
@@ -74,15 +73,17 @@ class EmpresaMapper implements MapperInterface {
      * @param String $corporateName Rasão Social da empresa
      * @return void
      */
-    public function verifyCorporateNameUnique($corporateName, &$messages) {
+    public function verifyCorporateNameUnique($corporateName, &$messages, $id = 0) {
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult('SocialContract\V1\Rest\Empresa\EmpresaEntity', 'c');
         $rsm->addFieldResult('c', 'id', 'id');
 
         $sql =  'SELECT c.id FROM companies as c WHERE c.corporate_name = ?';
+        $sql .= $id != 0 ? ' AND c.id <> ?' : '';
 
         $query = $this->entityManager->createNativeQuery($sql, $rsm);
         $query->setParameter(1, $corporateName);
+        if ($id != 0) $query->setParameter(2, $id);
 
         $companies = $query->getResult();
 
@@ -102,15 +103,17 @@ class EmpresaMapper implements MapperInterface {
      * @param String $cnpj CNPJ da empresa
      * @return void
      */
-    public function verifyCnpjUnique($cnpj, &$messages) {
+    public function verifyCnpjUnique($cnpj, &$messages, $id = 0) {
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult('SocialContract\V1\Rest\Empresa\EmpresaEntity', 'c');
         $rsm->addFieldResult('c', 'id', 'id');
 
         $sql =  'SELECT c.id FROM companies as c WHERE c.cnpj = ?';
+        $sql .= $id != 0 ? ' AND c.id <> ?' : '';
 
         $query = $this->entityManager->createNativeQuery($sql, $rsm);
         $query->setParameter(1, $cnpj);
+        if ($id != 0) $query->setParameter(2, $id);
 
         $companies = $query->getResult();
 
@@ -127,8 +130,25 @@ class EmpresaMapper implements MapperInterface {
      * 
      * @return Collection
      */
-    public function fetchAll() {
-        
+    public function fetchAll($params = []) {
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('SocialContract\V1\Rest\Empresa\EmpresaEntity' , 'e');
+        $rsm->addFieldResult('e', 'id', 'id');
+        $rsm->addFieldResult('e', 'cnpj', 'cnpj');
+        $rsm->addFieldResult('e', 'corporate_name', 'corporateName');
+        $rsm->addFieldResult('e', 'fancy_name', 'name');
+
+        $sql =  'SELECT id, cnpj, corporate_name, fancy_name FROM companies ' .
+                'WHERE corporate_name LIKE ? AND cnpj LIKE ?';
+        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, "%" . (isset($params['corporate_name']) ? $params['corporate_name'] : "") . "%");
+        $query->setParameter(2, "%" . (isset($params['cnpj']) ? $params['cnpj'] : "") . "%");
+        $interatorAdapter = new ArrayAdapter($query->getResult());
+        $companies = new EmpresaCollection($interatorAdapter);
+        $companies->setCurrentPageNumber($params['page']);
+        $companies->setItemCountPerPage(25);
+
+        return $companies;
     }
 
     /**
@@ -139,7 +159,47 @@ class EmpresaMapper implements MapperInterface {
      * @return Entity
      */
     public function fetch($id) {
-        
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('SocialContract\V1\Rest\Empresa\EmpresaEntity' , 'e');
+        $rsm->addFieldResult('e', 'id', 'id');
+        $rsm->addFieldResult('e', 'cnpj', 'cnpj');
+        $rsm->addFieldResult('e', 'corporate_name', 'corporateName');
+        $rsm->addFieldResult('e', 'fancy_name', 'name');
+        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\Contrato\ContratoEntity', 'c', 'e', 'socialContract');
+        $rsm->addFieldResult('c', 'contract_id', 'id');
+        $rsm->addFieldResult('c', 'file_path', 'filePath');
+        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity' , 'r', 'c', 'responsible');
+        $rsm->addFieldResult('r', 'responsibility_id', 'id');
+        $rsm->addMetaResult('r', 'type', 'type'); // discriminator column
+        $rsm->setDiscriminatorColumn('r', 'type');
+        $rsm->addJoinedEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity' , 'p', 'r', 'person');
+        $rsm->addFieldResult('p', 'person_id', 'id');
+
+        $sql =  'SELECT e.id, e.cnpj, e.corporate_name, e.fancy_name, c.id as contract_id, c.file_path, r.id as responsibility_id, r.type, p.id as person_id ' .
+                'FROM companies as e LEFT JOIN social_contracts as c ON c.company_id = e.id ' .
+                'LEFT JOIN responsibilities as r ON r.social_contract_id = c.id ' .
+                'LEFT JOIN people as p ON r.person_id = p.id ' .
+                'WHERE e.id=?';
+        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $id);
+        $company = $query->getOneOrNullResult();
+
+        $return = [
+            'company' => $company,
+            'responsible' => []
+        ];
+
+        if (!is_null($company->getSocialContract())) {
+            foreach ($company->getSocialContract()->getResponsible() as $responsibility) {
+                $return['responsible'][$responsibility->getId()] = [
+                    'id' => $responsibility->getId(),
+                    'type' => $responsibility->getResponsibilityType(),
+                    'person_id' => $responsibility->getPerson()->getId()
+                ];
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -151,7 +211,45 @@ class EmpresaMapper implements MapperInterface {
      * @return Entity
      */
     public function update($id, $data) {
+        $messages = [];
+        $fetchData = $this->fetch($id);
+        if(is_null($fetchData['company'])) throw new NotFoundException("Não foi encontrado nenhuma empresa para este ID");
+        
+        $this->verifyCorporateNameUnique($data->corporate_name, $messages, $id);
+        $this->verifyCnpjUnique($data->cnpj, $messages, $id);
+        
+        if (sizeof($messages) > 0) throw new UniqueConstraintViolationException(json_encode($messages));
 
+        $connection = $this->entityManager->getConnection();
+
+        // Cadastra a empresa no banco de dados
+        $connection->beginTransaction();
+        try {
+            $sql = 'UPDATE companies SET fancy_name=?, corporate_name=?, cnpj=? WHERE id=?';
+            $stmt = $connection->prepare($sql);
+            $stmt->bindValue(1, $data->name);
+            $stmt->bindValue(2, $data->corporate_name);
+            $stmt->bindValue(3, $data->cnpj);
+            $stmt->bindValue(4, $id);
+            $stmt->execute();
+            $data->company_id = $id;
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            throw $e;
+        }
+
+        if (!is_null($fetchData['company']->getSocialContract())) {
+            // Atualiza a instância de ContratoEntity vinculada
+            // a esta empresa, e atualizando os responsáveis descritos
+            $this->contratoMapper->update($fetchData['company']->getSocialContract()->getId(), $data);
+
+        } else if (isset($data->file) && !is_null($data->file) && !empty($data->file)) {
+            // Cria uma instância de ContratoEntity vinculando
+            // esta empresa ao seu Contrato Social, bem como
+            // os responsáveis descritos
+            $this->contratoMapper->create($data);
+        }
     }
 
     /**
