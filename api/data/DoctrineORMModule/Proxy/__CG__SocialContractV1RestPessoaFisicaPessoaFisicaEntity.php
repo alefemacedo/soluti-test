@@ -66,10 +66,10 @@ class PessoaFisicaEntity extends \SocialContract\V1\Rest\PessoaFisica\PessoaFisi
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'id', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'cpf', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'user', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'responsabilities'];
+            return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'id', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'cpf', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'user', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'responsibilities'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'id', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'cpf', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'user', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'responsabilities'];
+        return ['__isInitialized__', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'id', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'cpf', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'user', '' . "\0" . 'SocialContract\\V1\\Rest\\PessoaFisica\\PessoaFisicaEntity' . "\0" . 'responsibilities'];
     }
 
     /**
