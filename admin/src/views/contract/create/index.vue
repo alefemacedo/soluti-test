@@ -1,5 +1,7 @@
 <template>
-  <router-view/>
+  <div class="container contract--form">
+    ContratoSocial
+  </div>
 </template>
 
 <script>

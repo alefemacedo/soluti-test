@@ -15,7 +15,7 @@ class PessoaJuridica extends Pessoa {
     /**
      * Propriedade CNPJ que identifica uma Pessoa Jurídica
      * 
-     * @ORM\Column(type="string", length=11, nullable=false, unique=true)
+     * @ORM\Column(type="string", length=14, nullable=false, unique=true)
      * 
      * @var string
      */
@@ -28,7 +28,7 @@ class PessoaJuridica extends Pessoa {
      * 
      * @var string
      */
-    private $rasaoSocial;
+    private $corporateName;
 
 
     /**
@@ -61,22 +61,22 @@ class PessoaJuridica extends Pessoa {
      *
      * @return  string
      */ 
-    public function getRasaoSocial()
+    public function getCorporateName()
     {
-        return $this->rasaoSocial;
+        return $this->corporateName;
     }
 
     /**
      * Define a propriedade Rasão Social
      *
-     * @param  string  $rasaoSocial Propriedade Rasão Social
+     * @param  string  $corporateName Propriedade Rasão Social
      * que define uma Pessoa Jurídica
      *
      * @return  self
      */ 
-    public function setRasaoSocial(string $rasaoSocial)
+    public function setCorporateName(string $corporateName)
     {
-        $this->rasaoSocial = $rasaoSocial;
+        $this->corporateName = $corporateName;
 
         return $this;
     }

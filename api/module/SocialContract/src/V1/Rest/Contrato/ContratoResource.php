@@ -4,8 +4,13 @@ namespace SocialContract\V1\Rest\Contrato;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
-class ContratoResource extends AbstractResourceListener
-{
+class ContratoResource extends AbstractResourceListener {
+    protected $mapper;
+
+    public function __construct(ContratoMapper $mapper) {
+        $this->mapper = $mapper;
+    }
+
     /**
      * Create a resource
      *
@@ -47,7 +52,8 @@ class ContratoResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        $contract = $this->mapper->fetch($id);
+        return $contract;
     }
 
     /**
@@ -58,7 +64,8 @@ class ContratoResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        $contracts = $this->mapper->fetchAll($params);
+        return $contracts;
     }
 
     /**

@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  *      "C" = "CotistaEntity",
  *      "A" = "AdministradorEntity"
  * })
- * @ORM\Table(name="responsability")
+ * @ORM\Table(name="responsibilities")
  */
 class ResponsabilidadeEntity {
 
@@ -32,28 +32,28 @@ class ResponsabilidadeEntity {
     private $id;
 
     /**
-     * Chave estrangeira para a tabela de PessoaFisicaEntity 
+     * Referência para a tabela de PessoaFisicaEntity 
      * de modo a vincular uma instância de Contrato Social
      * a uma instância de Pessoa Física
      * 
-     * @ORM\ManyToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="responsabilidades")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity", inversedBy="responsibilities")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * 
      * @var int
      */
-    private $pessoaId;
+    private $person;
 
     /**
-     * Chave estrangeira para a tabela de ContratoEntity 
+     * Refência para a tabela de ContratoEntity 
      * de modo a vincular uma instância de Contrato Social
      * a uma instância de Usuário
      * 
-     * @ORM\ManyToOne(targetEntity="ContratoEntity", inversedBy="responsaveis")
-     * @ORM\JoinColumn(name="social_contract_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="ContratoEntity", inversedBy="responsible")
+     * @ORM\JoinColumn(name="social_contract_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * 
      * @var int
      */
-    private $contratoSocialId;
+    private $socialContract;
     
 
     /**
@@ -67,56 +67,72 @@ class ResponsabilidadeEntity {
     }
 
     /**
-     * Retorna a chave estrangeira para a tabela
-     * de PessoaFisicaEntity
+     * Retorna a referência da tabela de PessoaFisicaEntity
      * 
      * @return int
      */ 
-    public function getPessoaId()
+    public function getPerson()
     {
-        return $this->pessoaId;
+        return $this->person;
     }
 
     /**
-     * Define o valor da chave estrangeira para a
+     * Define o valor da referência da
      * tabela de PessoaFisicaEntity
      *
-     * @param int $pessoaId Chave estrangeira para a tabela de
+     * @param int $person Referência para a tabela de
      * PessoaFisicaEntity
      * 
      * @return  self
      */ 
-    public function setPessoaId($pessoaId)
+    public function setPerson($person)
     {
-        $this->pessoaId = $pessoaId;
+        $this->person = $person;
 
         return $this;
     }
 
     /**
-     * Retorna a chave estrangeira para a
-     * tabela de ContratoEntity
+     * Retorna a referência da tabela de ContratoEntity
      * 
      * @return int
      */ 
-    public function getContratoSocialId()
+    public function getSocialContract()
     {
-        return $this->contratoSocialId;
+        return $this->socialContract;
     }
 
     /**
-     * Define o valor da chave estrangeira para
-     * a tabela de ContratoEntity
+     * Define o valor da referência da tabela de ContratoEntity
      * 
-     * @param int $contratoSocialId Chave estrangeira para a
+     * @param int $socialContract Referência para a
      * tabela de ContratoEntity
      * 
      * @return  self
      */ 
-    public function setContratoSocialId($contratoSocialId)
+    public function setSocialContract($socialContract)
     {
-        $this->contratoSocialId = $contratoSocialId;
+        $this->socialContract = $socialContract;
 
         return $this;
+    }
+
+    /**
+     * Retorna o valor do discriminador para a instância da
+     * entidade ResponsabilidadeEntity ou suas subclasses
+     * 
+     * @param SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity $responsiblity
+     * @return String 
+     */
+    public function getResponsibilityType() {
+        $types = [
+            "SocialContract\V1\Rest\Contrato\AdministradorEntity" => "A",
+            "SocialContract\V1\Rest\Contrato\CotistaEntity" => "C",
+            "SocialContract\V1\Rest\Contrato\SocioEntity" => "S",
+            "SocialContract\V1\Rest\Contrato\ResponsavelLegalEntity" => "RL",
+            "SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity" => "R",
+        ];
+
+        return $types[get_class($this)];
     }
 }

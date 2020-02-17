@@ -5,6 +5,8 @@
  * The previous config file has been stored in ./config/modules.config.old
  */
 return [
+    'ZF\OAuth2\Doctrine',
+    'Zend\I18n',
     'Zend\\Cache',
     'Zend\\Form',
     'Zend\\Db',
@@ -30,6 +32,7 @@ return [
     'Phpro\\DoctrineHydrationModule',
     'ZF\\Apigility\\Doctrine\\Server',
     'DoctrineORMModule',
+    'ZfrCors',
     'Application',
     'SocialContract',
 ];

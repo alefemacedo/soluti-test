@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Entidade Empresa
  * 
- * @ORM\Table(name="company")
+ * @ORM\Table(name="companies")
  * @ORM\Entity
  * @ORM\AttributeOverrides({
- *      @ORM\AttributeOverride(name="nome",
+ *      @ORM\AttributeOverride(name="name",
  *          column=@ORM\Column(
  *              name     = "fancy_name",
  *              nullable = true,
@@ -36,7 +36,17 @@ class EmpresaEntity extends PessoaJuridica {
      * 
      * @var string
      */
-    private $nome;
+    private $name;
+
+    /**
+     * Instância de ContratoEntity que representa o Contrato Social
+     * que descreve a Empresa
+     * 
+     * @ORM\OneToOne(targetEntity="SocialContract\V1\Rest\Contrato\ContratoEntity", mappedBy="company")
+     * 
+     * @var SocialContract\V1\Rest\Contrato\ContratoEntity
+     */
+    private $socialContract;
 
     /**
      * Retorna a propriedade ID
@@ -46,5 +56,54 @@ class EmpresaEntity extends PessoaJuridica {
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Retorna a instância de Contrato Social que descreve a Empresa
+     *
+     * @return  SocialContract\V1\Rest\Contrato\ContratoEntity
+     */ 
+    public function getSocialContract()
+    {
+        return $this->socialContract;
+    }
+
+    /**
+     * Define a instância de Contrato Social que descreve a Empresa
+     *
+     * @param  SocialContract\V1\Rest\Contrato\ContratoEntity  $socialContract
+     * que descreve a Empresa
+     *
+     * @return  self
+     */ 
+    public function setSocialContract($socialContract)
+    {
+        $this->socialContract = $socialContract;
+
+        return $this;
+    }
+
+    /**
+     * Retorna o nome fantasia da empresa
+     *
+     * @return  string
+     */ 
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Define o nome fantasia da empresa
+     *
+     * @param  string  $name  Nome fantasia da empresa
+     *
+     * @return  self
+     */ 
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }
