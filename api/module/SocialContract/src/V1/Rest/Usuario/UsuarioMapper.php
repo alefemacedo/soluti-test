@@ -7,6 +7,7 @@ use SocialContract\V1\Rest\Interfaces\MapperInterface;
 use SocialContract\V1\Rest\PessoaFisica\PessoaFisicaMapper;
 use Zend\Crypt\Password\Bcrypt;
 use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
+use SocialContract\V1\Rest\Exception\NotFoundException;
 
 class UsuarioMapper implements MapperInterface {
     
@@ -40,9 +41,13 @@ class UsuarioMapper implements MapperInterface {
         }
 
         $this->verifyEmailUnique($data->email, $messages);
-        if (sizeof($messages) > 0) {
-            throw new UniqueConstraintViolationException(json_encode($messages));
+        if (!isset($data->password) || is_null($data->password) || empty($data->password)) {
+            $messages['password'] = [
+                'notEmpty' => "Por favor insira uma senha para o usuário."
+            ];
         }
+
+        if (sizeof($messages) > 0) throw new UniqueConstraintViolationException(json_encode($messages));
 
         $connection->beginTransaction();
         try {
@@ -67,15 +72,16 @@ class UsuarioMapper implements MapperInterface {
      * @param String $email
      * @return void
      */
-    public function verifyEmailUnique($email, &$messages) {
+    public function verifyEmailUnique($email, &$messages, $id = 0) {
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity', 'u');
         $rsm->addFieldResult('u', 'id', 'id');
 
         $sql =  'SELECT u.id FROM users as u WHERE u.email = ?';
-
+        $sql .= $id != 0 ? ' AND u.id <> ?' : '';
         $query = $this->entityManager->createNativeQuery($sql, $rsm);
         $query->setParameter(1, $email);
+        if($id != 0) $query->setParameter(2, $id);
 
         $user = $query->getOneOrNullResult();
 
@@ -87,12 +93,40 @@ class UsuarioMapper implements MapperInterface {
     }
 
     /**
+     * Verifica se o cpf informado para o usuário
+     * é único, ou seja, não existe nenhuma outra
+     * pessoa com este cpf cadastrado no banco de dados
+     * 
+     * @param String $cpf
+     * @return void
+     */
+    public function verifyCpfUniqueToUser($cpf, &$messages, $userId = 0) {
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity', 'p');
+        $rsm->addFieldResult('p', 'id', 'id');
+
+        $sql =  'SELECT p.id FROM people as p INNER JOIN users as u ON p.id = u.person_id ' .
+                'WHERE p.cpf = ? AND p.id <> ?';
+        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $cpf);
+        $query->setParameter(2, $userId);
+
+        $person = $query->getOneOrNullResult();
+
+        if (!is_null($person)) {
+            $messages['cpf'] = [
+                'uniqueError' => "O CPF informado já pertence a um usuário cadastrado!"
+            ];
+        }
+    }
+
+    /**
      * Retorna uma coleção de instâncias do banco de
      * dados
      * 
      * @return Collection
      */
-    public function fetchAll() {
+    public function fetchAll($params = []) {
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity', 'u');
         $rsm->addFieldResult('u', 'id', 'id');
@@ -178,7 +212,49 @@ class UsuarioMapper implements MapperInterface {
      * @return Entity
      */
     public function update($id, $data) {
+        $messages = [];
+        $person = $this->personMapper->fetchByUser($id);
+        if(is_null($person)) throw new NotFoundException("Não foi encontrado nenhum usuário para este ID");
 
+        $this->verifyEmailUnique($data->email, $messages, $id);
+        $this->verifyCpfUniqueToUser($data->cpf, $messages, $id);
+
+        if (sizeof($messages) > 0) throw new UniqueConstraintViolationException(json_encode($messages));
+
+        // Monta a SQL para atualizar a instância de usuário
+        $sqlUser = 'UPDATE users SET email=?';
+        if (isset($data->password) && !is_null($data->password) & !empty($data->password)) {
+            $sqlUser .= ', password=?';
+        }
+        $sqlUser .= ' WHERE id=?';
+
+        // Monta a SQL para atualizar a isntância de pessoa
+        $sqlPerson = 'UPDATE people SET name=?, cpf=? WHERE id = ?';
+
+        $bcrypt = new Bcrypt();
+        $connection = $this->entityManager->getConnection();
+        $connection->beginTransaction();
+        try {
+            $stmt = $connection->prepare($sqlUser);
+            $stmt->bindValue(1, $data->email);
+            $next = 2;
+            if (isset($data->password) && !is_null($data->password) & !empty($data->password)) {
+                $stmt->bindValue(2, $bcrypt->create($data->password));
+                $next = 3;
+            }
+            $stmt->bindValue($next, $id);
+            $stmt->execute();
+
+            $stmt = $connection->prepare($sqlPerson);
+            $stmt->bindValue(1, $data->name);
+            $stmt->bindValue(2, $data->cpf);
+            $stmt->bindValue(3, $person->getId());
+            $stmt->execute();
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            throw $e;
+        }
     }
 
     /**
