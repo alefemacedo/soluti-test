@@ -16,8 +16,7 @@ export const constantRouterMap = [
       {
         path: "dashboard",
         component: () => import("@/views/dashboard/index"),
-        name: "dashboard",
-        meta: { title: "dashboard", icon: "dashboard", noCache: true }
+        name: "dashboard"
       }
     ]
   },
@@ -30,14 +29,12 @@ export const constantRouterMap = [
       {
         path: "/login/form",
         component: () => import("@/views/login/form"),
-        name: "login.form",
-        meta: { title: "login.form.title", icon: "dashboard", noCache: true }
+        name: "login.form"
       },
       {
         path: "/login/user-registry",
         component: () => import("@/views/login/user-registry"),
-        name: "login.user.registry",
-        meta: { title: "login.user.registry.title", icon: "dashboard", noCache: true }
+        name: "login.user.registry"
       }
     ]
   },
@@ -60,14 +57,17 @@ export const constantRouterMap = [
       {
         path: "/user/index",
         component: () => import("@/views/user/list"),
-        name: "users.list",
-        meta: { title: "users.list.title", icon: "dashboard", noCache: true }
+        name: "users.list"
       },
       {
         path: "/user/registry",
         component: () => import("@/views/user/registry"),
-        name: "users.registry",
-        meta: { title: "users.registry.title", icon: "dashboard", noCache: true }
+        name: "users.registry"
+      },
+      {
+        path: "/user/profile",
+        component: () => import("@/views/user/profile"),
+        name: "users.profile"
       }
     ]
   },
@@ -80,14 +80,42 @@ export const constantRouterMap = [
       {
         path: "/company/index",
         component: () => import("@/views/company/list"),
-        name: "companies.list",
-        meta: { title: "users.list.title", icon: "dashboard", noCache: true }
+        name: "companies.list"
       },
       {
         path: "/company/create",
-        component: () => import("@/views/company/create"),
-        name: "companies.create",
-        meta: { title: "users.registry.title", icon: "dashboard", noCache: true }
+        component: () => import("@/views/company/form"),
+        name: "companies.create"
+      },
+      {
+        path: "/company/edit/:companyId",
+        props: true,
+        component: () => import("@/views/company/form"),
+        name: "companies.edit"
+      }
+    ]
+  },
+  {
+    path: "/contract",
+    component: Layout,
+    redirect: "/contract/index",
+    name: "contracts",
+    children: [
+      {
+        path: "/contract/index",
+        component: () => import("@/views/contract/list"),
+        name: "contracts.list"
+      },
+      {
+        path: "/contract/create",
+        component: () => import("@/views/contract/create"),
+        name: "contracts.create"
+      },
+      {
+        path: "/contract/show/:contractId",
+        props: true,
+        component: () => import("@/views/contract/show"),
+        name: "contracts.show"
       }
     ]
   }
