@@ -20,17 +20,17 @@
       <div class="responsible--title">
         Responsáveis
       </div>
-      <s-responsability-manager :error="error" v-model="responsibleCollection" />
+      <s-responsibility-manager :error="error" v-model="responsibleCollection" />
     </div>
   </div>
 </template>
 
 <script>
-import ResponsabilityManager from "./components/ResponsabilityManager"
+import ResponsibilityManager from "./components/ResponsibilityManager"
 
 export default {
   components: {
-    "s-responsability-manager": ResponsabilityManager
+    "s-responsibility-manager": ResponsibilityManager
   },
   props: {
     value: {
