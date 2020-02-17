@@ -37,33 +37,27 @@ class ResponsabilidadeMapper implements MapperInterface {
      */
     public function save($data, $savedResponsible, $socialContractId) {
         $connection = $this->entityManager->getConnection();
-       
         $newResponsible = $this->normalizeResponsibleCollection($data->responsible, $savedResponsible);
 
-        $insertSql = 'INSERT INTO responsabilities (person_id, social_contract_id, type) VALUES ';
-        
-        $count = 0;
-        $len = count($newResponsible['toInsert']);
-        foreach ($newResponsible['toInsert'] as $key => $value) {
-            $insertSql .= '(';
-            $insertSql .= ':' . $key . 'person_id, ';
-            $insertSql .= ':' . $key . 'social_contract_id, ';
-            $insertSql .= ':' . $key . 'type';
-            $insertSql .= ')';
-            $insertSql .= $count == ($len-1) ? '' : ', ';
-            $count +=1;
-        }
-
-        if (count($newResponsible['toDelete']) > 0) {
-            $deleteSql = 'DELETE FROM responsabilities WHERE id IN (' . implode(',', $newResponsible['toDelete']) . ')';
-        }
-
         // Cadastra os responsáveis descritos no Contrato Social
-        // no banco de dados
-        $connection->beginTransaction();
-        try {
-            // Insere as novas instâncias no banco de dados
-            if ($insertSql) {
+        // no banco de dado
+        if (count($newResponsible['toInsert']) > 0) {
+            $insertSql = 'INSERT INTO responsibilities (person_id, social_contract_id, type) VALUES ';
+            $count = 0;
+            $len = count($newResponsible['toInsert']);
+            foreach ($newResponsible['toInsert'] as $key => $value) {
+                $insertSql .= '(';
+                $insertSql .= ':' . $key . 'person_id, ';
+                $insertSql .= ':' . $key . 'social_contract_id, ';
+                $insertSql .= ':' . $key . 'type';
+                $insertSql .= ')';
+                $insertSql .= $count == ($len-1) ? '' : ', ';
+                $count +=1;
+            }
+
+            $connection->beginTransaction();
+            try {
+                // Insere as novas instâncias no banco de dados
                 $stmt = $connection->prepare($insertSql);
                 foreach ($newResponsible['toInsert'] as $key => $value) {
                     $stmt->bindValue(':' . $key . 'person_id', $value->person_id);
@@ -71,17 +65,29 @@ class ResponsabilidadeMapper implements MapperInterface {
                     $stmt->bindValue(':' . $key . 'type', $value->type);
                 }
                 $stmt->execute();
+                $connection->commit();                
+            } catch (\Exception $e) {
+                $connection->rollBack();
+                throw $e;
             }
-            // Remove as instâncias do banco de dados
-            if($deleteSql) {
-                $stmt->prepare($deleteSql);
-                $stmt->execute();
-            }
-            $connection->commit();
-        } catch (\Exception $e) {
-            $connection->rollBack();
-            throw $e;
         }
+
+        if (count($newResponsible['toDelete']) > 0) {
+            $deleteSql = 'DELETE FROM responsibilities WHERE id IN (' . implode(',', $newResponsible['toDelete']) . ')';
+            $connection->beginTransaction();
+            try {
+                // Remove as instâncias do banco de dados
+                $stmt = $connection->prepare($deleteSql);
+                $stmt->execute();
+                $connection->commit();
+                
+            } catch (\Exception $e) {
+                $connection->rollBack();
+                throw $e;
+            }
+
+        }
+        
     }
 
     /**
@@ -129,9 +135,7 @@ class ResponsabilidadeMapper implements MapperInterface {
             $this->validateResponsibleData($value, $messages);
         }
 
-        if(sizeof($messages) > 0) {
-            throw new ValidationException(json_encode($messages));
-        }
+        if(sizeof($messages) > 0) throw new ValidationException(json_encode($messages));
 
         // Recupera os objetos das responsabilidades/responsaveis que
         // foram removidos
@@ -143,13 +147,13 @@ class ResponsabilidadeMapper implements MapperInterface {
         // Todos as instâncias de ResponsabilidadeEntity de todas
         // as pessoas que foram removidas serão também removidas do banco,
         // portanto constrói-se um array com os IDs dessas instâncias
-        $return['toDelete'] = array_map(function ($responsability) {
-            return $responsability->getId();
+        $return['toDelete'] = array_map(function ($responsibility) {
+            return $responsibility->getId();
         } , $removedResponsable);
 
         // Remove todos os itens duplicados que estão no array de objetos
         // a serem inseridos
-        $return['toInsert'] = $this->verifyDuplicatedInsertedsResponsabilities($return['toInsert']);
+        $return['toInsert'] = $this->verifyDuplicatedInsertedsResponsibilities($return['toInsert']);
 
         return $return;
     }
@@ -158,11 +162,11 @@ class ResponsabilidadeMapper implements MapperInterface {
      * Verifica quais itens do array de responsavéis a serem inseridos
      * estão duplicados, e os remove do array
      * 
-     * @param $responsabilities Array com os items que representam os
+     * @param $responsibilities Array com os items que representam os
      * responsaveis descritos no Contrato Social a serem inseridos no
      * banco
      */
-    public function verifyDuplicatedInsertedsResponsabilities($responsable) {
+    public function verifyDuplicatedInsertedsResponsibilities($responsable) {
         $counters = [
             'S' => 0,
             'A' => 0,
@@ -226,8 +230,32 @@ class ResponsabilidadeMapper implements MapperInterface {
      * 
      * @return Collection
      */
-    public function fetchAll() {
+    public function fetchAll($params = []) {
         
+    }
+
+    /**
+     * Retorna uma coleção de instâncias de ResponsabilidadeEntity
+     * do banco de dados indexada pelos IDS
+     * 
+     * @return Collection
+     */
+    public function fetchAllByContractIndexed($contractId) {
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('SocialContract\V1\Rest\Contrato\ResponsabilidadeEntity', 'r');
+        $rsm->addFieldResult('r', 'id', 'id');
+
+        $sql =  'SELECT r.id FROM responsibilities as r WHERE r.social_contract_id=?';
+        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $contractId);
+        
+        $responsible = $query->getResult();
+        $keys = array_map(function ($responsibility) {
+            return $responsibility->getId();
+        } , $responsible);
+        $responsible = array_combine($keys, $responsible);
+
+        return $responsible;
     }
 
     /**
