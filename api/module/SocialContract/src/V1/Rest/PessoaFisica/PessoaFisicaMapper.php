@@ -4,6 +4,7 @@ namespace SocialContract\V1\Rest\PessoaFisica;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\EntityManager;
 use SocialContract\V1\Rest\Interfaces\MapperInterface;
+use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
 
 class PessoaFisicaMapper implements MapperInterface {
     
@@ -21,6 +22,10 @@ class PessoaFisicaMapper implements MapperInterface {
      * @return Entity
      */
     public function create($data) {
+        $messages = [];
+        $this->verifyCpfUnique($data->cpf, $messages);
+        if (sizeof($messages) > 0) throw new UniqueConstraintViolationException(json_encode($messages));
+
         $connection = $this->entityManager->getConnection();
         $personId = null;
         $connection->beginTransaction();
@@ -38,6 +43,34 @@ class PessoaFisicaMapper implements MapperInterface {
         }
 
         return $personId;
+    }
+
+    /**
+     * Verifica se o cpf informado para a pessoa
+     * é único, ou seja, não existe nenhuma outra pessoa
+     * com este cpf cadastrada no banco de dados
+     * 
+     * @param String $cpf
+     * @return void
+     */
+    public function verifyCpfUnique($cpf, &$messages, $id = 0) {
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('SocialContract\V1\Rest\PessoaFisica\PessoaFisicaEntity', 'p');
+        $rsm->addFieldResult('p', 'id', 'id');
+
+        $sql =  'SELECT p.id FROM people as p WHERE p.cpf = ?';
+        $sql .= $id != 0 ? ' AND p.id <> ?' : '';
+        $query = $this->entityManager->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $cpf);
+        if($id != 0) $query->setParameter(2, $id);
+
+        $person = $query->getOneOrNullResult();
+
+        if (!is_null($person)) {
+            $messages['cpf'] = [
+                'uniqueError' => "O CPF informado já pertence a uma pessoa cadastrada!"
+            ];
+        }
     }
 
     /**
