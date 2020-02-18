@@ -1,7 +1,10 @@
 <template>
   <div class="container company--form">
     <div class="company--form_title">
-      <h1 class="display-4">
+      <h1 v-if="parseInt(companyId) > 0" class="display-4">
+        Alterar Empresa
+      </h1>
+      <h1 v-else class="display-4">
         Cadastro de Empresa
       </h1>
     </div>

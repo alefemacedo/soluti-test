@@ -601,15 +601,6 @@ return [
                 'description' => 'CPF que identifica a pessoa',
                 'field_type' => 'String',
             ],
-            2 => [
-                'required' => false,
-                'validators' => [],
-                'filters' => [],
-                'name' => 'user',
-                'description' => 'Objeto contendo os dados do usuário desta pessoa (pode não ter)',
-                'field_type' => 'Object',
-                'allow_empty' => true,
-            ],
         ],
     ],
     'zf-mvc-auth' => [

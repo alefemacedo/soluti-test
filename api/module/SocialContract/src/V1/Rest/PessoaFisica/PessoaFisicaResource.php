@@ -2,8 +2,11 @@
 namespace SocialContract\V1\Rest\PessoaFisica;
 
 use ZF\ApiProblem\ApiProblem;
+use ZF\ApiProblem\ApiProblemResponse;
 use ZF\Rest\AbstractResourceListener;
 use SocialContract\V1\Rest\Exception\NotFoundException;
+use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
+use SocialContract\V1\Rest\Exception\ValidationException;
 
 class PessoaFisicaResource extends AbstractResourceListener
 {
@@ -21,7 +24,28 @@ class PessoaFisicaResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+        $return = [
+            'message' => ''
+        ];
+
+        try{
+            $this->mapper->create($data);
+            $return['message'] = "Pessoa cadastrada com sucesso.";
+        } catch (ValidationException $e) {
+            return new ApiProblemResponse(
+                new ApiProblem(422, 'Failed Validation', null, null, [
+                    'validation_messages' => json_decode($e->getMessage())
+                ])
+            );
+        } catch (UniqueConstraintViolationException $e) {
+            return new ApiProblemResponse(
+                new ApiProblem(422, 'Failed Validation', null, null, [
+                    'validation_messages' => json_decode($e->getMessage())
+                ])
+            );
+        } catch (\Exception $e) {
+            return new ApiProblem(500, $e->getMessage());
+        }
     }
 
     /**
