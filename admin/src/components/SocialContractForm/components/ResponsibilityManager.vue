@@ -7,21 +7,26 @@
       :people="people"
       :error="error"
       :prop="'responsible[' + item.id + ']'"
-      @delete="handleRemove"/>
+      @delete="handleRemove"
+      @show-modal="handleShowModal"/>
     
     <div class="form-group d-flex justify-content-end mt-3">
       <button @click="handleAdd" type="button" class="btn btn-success mr-1">Novo Item</button>
     </div>
+
+    <s-person-form v-model="showComputed"/>
   </div>
 </template>
 
 <script>
 import ResponsibilityItem from "./ResponsibilityItem"
+import PersonForm from "./PersonForm"
 import { fetchAll } from "@/api/person"
 
 export default {
   components: {
-    "s-responsibility-item": ResponsibilityItem
+    "s-responsibility-item": ResponsibilityItem,
+    "s-person-form": PersonForm
   },
   props: {
     value: {
@@ -41,7 +46,8 @@ export default {
   },
   data() {
     return {
-      people: []
+      people: [],
+      show: false
     }
   },
   beforeMount() {
@@ -77,6 +83,15 @@ export default {
             return obj
           })
           .sort((a, b) => a.position - b.position)
+      }
+    },
+    showComputed: {
+      get() {
+        return this.show
+      },
+      set(value) {
+        this.show = value
+        this.fetchAllPeople()
       }
     }
   },
@@ -131,6 +146,13 @@ export default {
       delete responsibleUpdated[item.id]
       // Emite um evento alterando os dados do formulário
       this.$emit("input", responsibleUpdated)
+    },
+    /**
+     * Mostra o modal com o formulário para cadastro
+     * de Pessoa
+     */
+    handleShowModal() {
+      this.show = true
     }
   }
 }

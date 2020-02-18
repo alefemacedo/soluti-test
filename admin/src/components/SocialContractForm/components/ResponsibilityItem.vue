@@ -2,18 +2,26 @@
   <div class="reponsability--item form-inline w-100 h-100 p-2 justify-content-between">
     <div class="form-group mb-2">
       <label class="mr-2" :for="prop + '[person_id]'">Pessoa</label>
-      <select
-        v-model="value.person_id"
-        :class="{ 'is-invalid':  hasError('person_id') }"
-        class="form-control"
-        :id="prop + '[person_id]'">
-        <option value="" selected>Selecione o responsável</option>
-        <option
-          v-for="(person, index) in people"
-          :key="index" :value="person.value">
-          {{ person.text }}
-        </option>
-      </select>
+      <div class="input-group">
+        <select
+          v-model="value.person_id"
+          :class="{ 'is-invalid':  hasError('person_id') }"
+          class="form-control"
+          :id="prop + '[person_id]'">
+          <option value="" selected>Selecione o responsável</option>
+          <option
+            v-for="(person, index) in people"
+            :key="index" :value="person.value">
+            {{ person.text }}
+          </option>
+        </select>
+
+        <div class="input-group-append">
+          <button @click.prevent="emitShowModal" class="btn btn-outline-success" type="button">
+            <i class="far fa-plus-square"></i>
+          </button>
+        </div>
+      </div>
       <div v-for="(message, index) in getErrorMessages('person_id')" :key="index" class="invalid-feedback">
         {{ message }}
       </div>
@@ -92,6 +100,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Emite um envento para que este item seja removido
+     */
     emitRemove() {
       this.$emit("delete", this.value)
     },
@@ -109,6 +120,13 @@ export default {
     getErrorMessages(property) {
       return Object.prototype.hasOwnProperty.call(this.error, this.prop)
         ? this.error[this.prop][property] : {}
+    },
+    /**
+     * Emite um evento para mostrar o modal
+     * com o formulário de cadastro de pessoas
+     */
+    emitShowModal() {
+      this.$emit("show-modal")
     }
   }
 }
