@@ -51,19 +51,9 @@ export const constantRouterMap = [
   {
     path: "/user",
     component: Layout,
-    redirect: "/user/index",
+    redirect: "/user/profile",
     name: "users",
     children: [
-      {
-        path: "/user/index",
-        component: () => import("@/views/user/list"),
-        name: "users.list"
-      },
-      {
-        path: "/user/registry",
-        component: () => import("@/views/user/registry"),
-        name: "users.registry"
-      },
       {
         path: "/user/profile",
         component: () => import("@/views/user/profile"),
@@ -105,11 +95,6 @@ export const constantRouterMap = [
         path: "/contract/index",
         component: () => import("@/views/contract/list"),
         name: "contracts.list"
-      },
-      {
-        path: "/contract/create",
-        component: () => import("@/views/contract/create"),
-        name: "contracts.create"
       },
       {
         path: "/contract/show/:contractId",

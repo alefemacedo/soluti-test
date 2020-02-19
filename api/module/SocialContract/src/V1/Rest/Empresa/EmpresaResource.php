@@ -132,6 +132,12 @@ class EmpresaResource extends AbstractResourceListener {
             );
         } catch(NotFoundException $e) {
             return new ApiProblem(404, $e->getMessage());
+        } catch (ValidationException $e) {
+            return new ApiProblemResponse(
+                new ApiProblem(422, 'Failed Validation', null, null, [
+                    'validation_messages' => json_decode($e->getMessage())
+                ])
+            );
         } catch (\Exception $e) {
             return new ApiProblem(501, $e->getMessage());
         }
