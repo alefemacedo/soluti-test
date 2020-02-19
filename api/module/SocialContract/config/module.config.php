@@ -81,12 +81,10 @@ return [
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'DELETE',
-                3 => 'POST',
+                2 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,
@@ -103,12 +101,10 @@ return [
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'DELETE',
-                3 => 'POST',
+                2 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
             'collection_query_whitelist' => [
                 0 => 'page',
@@ -129,12 +125,9 @@ return [
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'DELETE',
-                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
             'collection_query_whitelist' => [
                 0 => 'page',
@@ -154,13 +147,10 @@ return [
             'collection_name' => 'people',
             'entity_http_methods' => [
                 0 => 'GET',
-                1 => 'PATCH',
-                2 => 'DELETE',
-                3 => 'POST',
+                1 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,

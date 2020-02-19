@@ -86,13 +86,7 @@ class PessoaFisicaMapper implements MapperInterface {
         $rsm->addFieldResult('p', 'id', 'id');
         $rsm->addFieldResult('p', 'name', 'name');
         $rsm->addFieldResult('p', 'cpf', 'cpf');
-        // $rsm->addJoinedEntityResult('SocialContract\V1\Rest\Usuario\UsuarioEntity' , 'u', 'p', 'user');
-        // $rsm->addFieldResult('u', 'user_id', 'id');
-        // $rsm->addFieldResult('u', 'email', 'email');
-        // $rsm->addFieldResult('u', 'password', 'password');
 
-        // $sql =  'SELECT p.id, p.cpf, p.name, u.id AS user_id, u.email, u.password FROM people AS p ' .
-        //         'LEFT JOIN users as u ON u.person_id = p.id';
         $sql = 'SELECT id, name, cpf  FROM people';
         $query = $this->entityManager->createNativeQuery($sql, $rsm);
 

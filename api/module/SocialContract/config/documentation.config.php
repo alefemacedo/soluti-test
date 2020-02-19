@@ -33,9 +33,11 @@ return [
                    }
                }
               "email": "E-mail/Login do usuário",
-              "cpf": "CPF da pessoa a qual o usuário pertence",
-              "name": "Nome da pessoa a qual o usuário é vinculado",
-              "password": "Senha do usuário para login"
+              "password": "Senha do usuário para login",
+              "person": {
+                    "cpf": "CPF da pessoa a qual o usuário pertence",
+                    "name": "Nome da pessoa a qual o usuário é vinculado"
+               }
            }
        ]
    }
@@ -55,10 +57,12 @@ return [
            "href": "/user[/:user_id]"
        }
    }
-   "email": "E-mail/Login do usuário",
-   "cpf": "CPF da pessoa a qual o usuário pertence",
-   "name": "Nome da pessoa a qual o usuário é vinculado",
-   "password": "Senha do usuário para login"
+    "email": "E-mail/Login do usuário",
+    "password": "Senha do usuário para login",
+    "person": {
+         "cpf": "CPF da pessoa a qual o usuário pertence",
+         "name": "Nome da pessoa a qual o usuário é vinculado"
+     }
 }',
             ],
             'PATCH' => [
@@ -67,8 +71,7 @@ return [
    "name": "Nome da pessoa a qual o usuário pertence",
    "cpf": "CPF da pessoa a qual o usuário pertence",
    "password": "Senha do usuário",
-   "email": "E-mail/Login do usuário",
-   "person_id": "Identificador da pessoa a qual o usuário pertence"
+   "email": "E-mail/Login do usuário"
 }',
                 'response' => '{
    "_links": {
@@ -76,10 +79,7 @@ return [
            "href": "/user[/:user_id]"
        }
    }
-   "email": "E-mail/Login do usuário",
-   "cpf": "CPF da pessoa a qual o usuário pertence",
-   "name": "Nome da pessoa a qual o usuário é vinculado",
-   "password": "Senha do usuário para login"
+   "message": "Mensagem informando se a atualização foi realizada com sucesso"
 }',
             ],
             'POST' => [
@@ -96,17 +96,121 @@ return [
            "href": "/usuario[/:usuario_id]"
        }
    }
-   "email": "E-mail/Login do usuário",
-   "cpf": "CPF da pessoa a qual o usuário pertence",
-   "name": "Nome da pessoa a qual o usuário é vinculado",
-   "password": "Senha do usuário"
+   "message": "Mensagem informando se o usuário foi cadastrado com sucesso"
 }',
             ],
             'DELETE' => [
-                'description' => 'Remove um usuário do banco de acordo com seu ID',
+                'description' => 'Remove um usuário do banco de acordo com seu ID (Este método não foi implementado)',
                 'request' => '',
                 'response' => '',
             ],
+        ],
+    ],
+    'SocialContract\\V1\\Rest\\Empresa\\Controller' => [
+        'description' => 'Serviço para cadastro de empresas juntamente com seu contrato social (opcional)',
+        'collection' => [
+            'description' => 'Coleção de instâncias da entidade Empresa',
+            'GET' => [
+                'description' => 'Retorna todas as empresas cadastradas no banco de dados',
+                'response' => '{
+   "_links": {
+       "self": {
+           "href": "/company"
+       },
+       "first": {
+           "href": "/company?page={page}"
+       },
+       "prev": {
+           "href": "/company?page={page}"
+       },
+       "next": {
+           "href": "/company?page={page}"
+       },
+       "last": {
+           "href": "/company?page={page}"
+       }
+   }
+   "_embedded": {
+       "companies": [
+           {
+               "_links": {
+                   "self": {
+                       "href": "/company[/:company_id]"
+                   }
+               }
+              "cnpj": "CNPJ da empresa",
+              "name": "Nome fantasia da empresa",
+              "corporateName": "Rasão Social da empresa"
+           }
+       ]
+   }
+}',
+            ],
+        ],
+        'entity' => [
+            'GET' => [
+                'description' => 'Busca uma empresa no banco de dados de acordo com seu identificador que pode ser o ID no banco ou seu CNPJ',
+                'response' => '{
+   "_links": {
+       "self": {
+           "href": "/company[/:company_id]"
+       }
+   }
+   "cnpj": "CNPJ da empresa",
+   "name": "Nome fantasia da empresa",
+   "corporateName": "Rasão Social da empresa",
+   "_embedded": {
+        "socialContract": {
+              "filePath": "Caminho do arquivo PDF do Contrato Social"
+              "_embedded": {
+                    "responsible": "Array contento os dados de todos os responsáveis definidos no Contrato Social"
+              }
+        }
+   }
+}',
+            ],
+            'PATCH' => [
+                'description' => 'Atualiza uma instância existente no banco da entidade Empresa juntamente com os dados de seus responsáveis e do Contrato Social',
+                'request' => '{
+   "cnpj": "CNPJ da empresa",
+   "name": "Nome fantasia da empresa",
+   "file": "Arquivo PDF representando o Contrato Social da empresa",
+   "corporate_name": "Rasão Social da empresa",
+   "responsible": "Responsáveis pela empresa de acordo com o Contrato Social",
+   "userFile": "Identificador do usuário que realizou o último upload de arquivo para o contrato social da empresa"
+}',
+                'response' => '{
+   "_links": {
+       "self": {
+           "href": "/company[/:company_id]"
+       }
+   }
+   "message": "Mensagem informando se os dados  da Empresa foram atualizados com sucesso"
+}',
+            ],
+            'DELETE' => [
+                'description' => 'Remove uma instância da entidade Empresa do banco de dados de acordo com seu ID no banco ou CNPJ',
+            ],
+            'POST' => [
+                'description' => 'Insere uma instância da entidade Empresa no banco, juntamente com os dados do contrato social (opcional) e portanto  seus responsáveis',
+                'request' => '{
+   "cnpj": "CNPJ da empresa",
+   "name": "Nome fantasia da empresa",
+   "file": "Arquivo PDF representando o Contrato Social da empresa",
+   "corporate_name": "Rasão Social da empresa",
+   "responsible": "Responsáveis pela empresa de acordo com o Contrato Social",
+   "userFile": "Identificador do usuário que realizou o último upload de arquivo para o contrato social da empresa"
+}',
+                'response' => '{
+   "_links": {
+       "self": {
+           "href": "/company[/:company_id]"
+       }
+   }
+   "message": "Mensagem informando se a Empresa foi cadastrada com sucesso"
+}',
+            ],
+            'description' => 'Entidade que representa as instâncias de Empresa cadastradas no banco de dados',
         ],
     ],
     'SocialContract\\V1\\Rest\\Contrato\\Controller' => [
@@ -141,10 +245,11 @@ return [
                        "href": "/contract[/:contract_id]"
                    }
                }
-              "file": "Arquivo PDF representando o Contrato Social da empresa",
-              "responsible": "Coleção de objetos com os dados dos responsáveis descritos no Contrato Social, como ID da pessoa e sua responsabilidade",
-              "company_id": "Identificador (ID do banco de dados) da empresa a qual o Contrato Social é referente",
-              "validated": "Define se a instância em questão já foi validada"
+              "filename": Nome do arquivo PDF que representa o Contrato Social da empresa",
+              "validated": "Flag indicando se o contrato já foi validado",
+              "company": "Objeto contendo os dados da empresa à qual o Contrato Social é vinculado",
+              "user": "Objeto contendo o identificador do usuário que fez upload do Contrato Social,  e os dados da 
+               Pessoa Física vinculada à este",
            }
        ]
    }
@@ -160,19 +265,15 @@ return [
            "href": "/contract[/:contract_id]"
        }
    }
-   "file": "Arquivo PDF representando o Contrato Social da empresa",
-   "responsible": "Coleção de objetos com os dados dos responsáveis descritos no Contrato Social, como ID da pessoa e sua responsabilidade",
-   "company_id": "Identificador (ID do banco de dados) da empresa a qual o Contrato Social é referente",
-   "validated": "Define se a instância em questão já foi validada"
+   "file": "FilePath do arquivo PDF que representa o Contrato Social da empresa",
+   "responsible": "Array formatado de objetos com os dados dos responsáveis descritos no Contrato Social, como ID da pessoa e sua responsabilidade",
+   "company": "Objeto contendo os dados da Empresa à qual o Contrato Social é vinculado"
 }',
             ],
             'PATCH' => [
                 'description' => 'Atualiza os dados de uma instância da entidade Contrato Social, de acordo com seu identificador no banco (ID)',
                 'request' => '{
-   "file": "Arquivo PDF representando o Contrato Social da empresa",
-   "responsible": "Coleção de objetos com os dados dos responsáveis descritos no Contrato Social, como ID da pessoa e sua responsabilidade",
-   "company_id": "Identificador (ID do banco de dados) da empresa a qual o Contrato Social é referente",
-   "validated": "Define se a instância em questão já foi validada"
+   "validate": "Flag identificando se a requisição é para validar o Contrato Social"
 }',
                 'response' => '{
    "_links": {
@@ -180,10 +281,7 @@ return [
            "href": "/contract[/:contract_id]"
        }
    }
-   "file": "Arquivo PDF representando o Contrato Social da empresa",
-   "responsible": "Coleção de objetos com os dados dos responsáveis descritos no Contrato Social, como ID da pessoa e sua responsabilidade",
-   "company_id": "Identificador (ID do banco de dados) da empresa a qual o Contrato Social é referente",
-   "validated": "Define se a instância em questão já foi validada"
+   "message": "Mensagem informando se o Contrato Social foi atualizado ou validado com sucesso"
 }',
             ],
             'DELETE' => [
@@ -229,115 +327,6 @@ return [
             'description' => 'Entidade que representa os dados do Contrato Social de uma empresa',
         ],
     ],
-    'SocialContract\\V1\\Rest\\Empresa\\Controller' => [
-        'description' => 'Serviço para cadastro de empresas juntamente com seu contrato social (opcional)',
-        'collection' => [
-            'description' => 'Coleção de instâncias da entidade Empresa',
-            'GET' => [
-                'description' => 'Retorna todas as empresas cadastradas no banco de dados',
-                'response' => '{
-   "_links": {
-       "self": {
-           "href": "/company"
-       },
-       "first": {
-           "href": "/company?page={page}"
-       },
-       "prev": {
-           "href": "/company?page={page}"
-       },
-       "next": {
-           "href": "/company?page={page}"
-       },
-       "last": {
-           "href": "/company?page={page}"
-       }
-   }
-   "_embedded": {
-       "companies": [
-           {
-               "_links": {
-                   "self": {
-                       "href": "/company[/:company_id]"
-                   }
-               }
-              "cnpj": "CNPJ da empresa",
-              "name": "Nome fantasia da empresa",
-              "file": "Arquivo PDF representando o Contrato Social da empresa",
-              "corporate_name": "Rasão Social da empresa",
-              "responsible": "Responsáveis pela empresa de acordo com o Contrato Social"
-           }
-       ]
-   }
-}',
-            ],
-        ],
-        'entity' => [
-            'GET' => [
-                'description' => 'Busca uma empresa no banco de dados de acordo com seu identificador que pode ser o ID no banco ou seu CNPJ',
-                'response' => '{
-   "_links": {
-       "self": {
-           "href": "/company[/:company_id]"
-       }
-   }
-   "cnpj": "CNPJ da empresa",
-   "name": "Nome fantasia da empresa",
-   "file": "Arquivo PDF representando o Contrato Social da empresa",
-   "corporate_name": "Rasão Social da empresa",
-   "responsible": "Responsáveis pela empresa de acordo com o Contrato Social"
-}',
-            ],
-            'PATCH' => [
-                'description' => 'Atualiza uma instância existente no banco da entidade Empresa juntamente com os dados de seus responsáveis e do Contrato Social',
-                'request' => '{
-   "cnpj": "CNPJ da empresa",
-   "name": "Nome fantasia da empresa",
-   "file": "Arquivo PDF representando o Contrato Social da empresa",
-   "corporate_name": "Rasão Social da empresa",
-   "responsible": "Responsáveis pela empresa de acordo com o Contrato Social"
-}',
-                'response' => '{
-   "_links": {
-       "self": {
-           "href": "/company[/:company_id]"
-       }
-   }
-   "cnpj": "CNPJ da empresa",
-   "name": "Nome fantasia da empresa",
-   "file": "Arquivo PDF representando o Contrato Social da empresa",
-   "corporate_name": "Rasão Social da empresa",
-   "responsible": "Responsáveis pela empresa de acordo com o Contrato Social"
-}',
-            ],
-            'DELETE' => [
-                'description' => 'Remove uma instância da entidade Empresa do banco de dados de acordo com seu ID no banco ou CNPJ',
-            ],
-            'POST' => [
-                'description' => 'Insere uma instância da entidade Empresa no banco, juntamente com os dados do contrato social (opcional) e portanto  seus responsáveis',
-                'request' => '{
-   "cnpj": "CNPJ da empresa",
-   "name": "Nome fantasia da empresa",
-   "file": "Arquivo PDF representando o Contrato Social da empresa",
-   "corporate_name": "Rasão Social da empresa",
-   "responsible": "Responsáveis pela empresa de acordo com o Contrato Social"
-}',
-                'response' => '{
-   "_links": {
-       "self": {
-           "href": "/company[/:company_id]"
-       }
-   }
-   "cnpj": "CNPJ da empresa",
-   "name": "Nome fantasia da empresa",
-   "file": "Arquivo PDF representando o Contrato Social da empresa",
-   "corporate_name": "Rasão Social da empresa",
-   "responsible": "Responsáveis pela empresa de acordo com o Contrato Social"
-}',
-            ],
-            'description' => 'Entidade que representa as instâncias de Empresa cadastradas no banco de dados',
-        ],
-    ],
     'SocialContract\\V1\\Rest\\PessoaFisica\\Controller' => [
         'description' => 'Serviço para gestão das instâncias da entidade de Pessoa Física',
         'collection' => [
@@ -370,9 +359,8 @@ return [
                        "href": "/person[/:person_id]"
                    }
                }
-              "name": "Nome da pessoa",
-              "cpf": "CPF que identifica a pessoa",
-              "user": "Objeto contendo os dados do usuário desta pessoa (pode não ter)"
+              "value": "ID da pessoa",
+              "text": "Nome da pessoa formatado juntamente com o CPF"
            }
        ]
    }
@@ -389,10 +377,11 @@ return [
            "href": "/person[/:person_id]"
        }
    }
-   "name": "Nome da pessoa",
-   "cpf": "CPF que identifica a pessoa",
-   "user": "Objeto contendo os dados do usuário desta pessoa (pode não ter, e é retornado como null)",
-    "hasUser": "Variável que define se a pessoa tem ou não um usuário, que por medidas de segurança não são retornados, já que a rota não possui validação"
+   "person": {
+        "name": "Nome da pessoa",
+        "cpf": "CPF que identifica a pessoa"
+    },
+    "hasUser": "Flag que identifica se a pessoa tem um usuário cadastrado ou não"
 }',
             ],
             'PATCH' => [
@@ -427,8 +416,7 @@ return [
            "href": "/person[/:person_id]"
        }
    }
-   "name": "Nome da pessoa",
-   "cpf": "CPF que identifica a pessoa"
+   "message": "Mensagem informando se a Pessoa Física foi cadastrada com sucesso"
 }',
             ],
         ],
