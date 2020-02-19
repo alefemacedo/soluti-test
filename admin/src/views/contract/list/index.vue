@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="contracts--list">
     <div class="contracts--list_title">
       <h1 class="display-4">Contratos Sociais</h1>
     </div>
