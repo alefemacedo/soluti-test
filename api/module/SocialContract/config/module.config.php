@@ -81,12 +81,10 @@ return [
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'DELETE',
-                3 => 'POST',
+                2 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,
@@ -103,12 +101,10 @@ return [
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'DELETE',
-                3 => 'POST',
+                2 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
             'collection_query_whitelist' => [
                 0 => 'page',
@@ -129,12 +125,9 @@ return [
             'entity_http_methods' => [
                 0 => 'GET',
                 1 => 'PATCH',
-                2 => 'DELETE',
-                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
             'collection_query_whitelist' => [
                 0 => 'page',
@@ -154,13 +147,10 @@ return [
             'collection_name' => 'people',
             'entity_http_methods' => [
                 0 => 'GET',
-                1 => 'PATCH',
-                2 => 'DELETE',
-                3 => 'POST',
+                1 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,
@@ -192,6 +182,8 @@ return [
                 0 => 'application/vnd.social-contract.v1+json',
                 1 => 'application/hal+json',
                 2 => 'application/json',
+                3 => 'text/html',
+                4 => 'application/pdf',
             ],
             'SocialContract\\V1\\Rest\\PessoaFisica\\Controller' => [
                 0 => 'application/vnd.social-contract.v1+json',
@@ -214,6 +206,7 @@ return [
                 1 => 'application/json',
                 2 => 'multipart/form-data',
                 3 => 'text/html',
+                4 => 'application/pdf',
             ],
             'SocialContract\\V1\\Rest\\PessoaFisica\\Controller' => [
                 0 => 'application/vnd.social-contract.v1+json',
@@ -564,8 +557,26 @@ return [
                 'required' => false,
                 'validators' => [],
                 'filters' => [],
-                'name' => 'validated',
-                'description' => 'Define se a instância em questão já foi validada',
+                'name' => 'file_path',
+                'description' => 'Caminho do arquivo do Contrato Social',
+                'allow_empty' => true,
+                'field_type' => 'String',
+            ],
+            4 => [
+                'required' => false,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'validate',
+                'description' => 'Flag que identifica se a requisição é para validar um Contrato Social',
+                'field_type' => 'Boolean',
+                'allow_empty' => true,
+            ],
+            5 => [
+                'required' => false,
+                'validators' => [],
+                'filters' => [],
+                'name' => 'isFile',
+                'description' => 'Define se a requisição é para buscar o arquivo do Contrato Social no sistema de arquivos',
                 'field_type' => 'Boolean',
                 'allow_empty' => true,
             ],

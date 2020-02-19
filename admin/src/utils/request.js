@@ -70,6 +70,24 @@ service.interceptors.response.use(
           })
         }
       }
+
+      // Verifica se o response esperado para a requisição
+      // é um Blob e se o response é um Blob
+      if (error.request.responseType === "blob" && error.response.data instanceof Blob) {
+        return new Promise((resolve, reject) => {
+          let reader = new FileReader()
+          reader.onload = () => {
+            error.response.data = JSON.parse(reader.result)
+            resolve(Promise.reject(error))
+          }
+
+          reader.onerror = () => {
+            reject(error)
+          }
+
+          reader.readAsText(error.response.data)
+        })
+      }
     }
     return Promise.reject(error)
   }

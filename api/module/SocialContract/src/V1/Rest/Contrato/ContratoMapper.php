@@ -5,6 +5,7 @@ use SocialContract\V1\Rest\Interfaces\MapperInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use SocialContract\V1\Rest\Exception\ValidationException;
+use SocialContract\V1\Rest\Exception\NotFoundException;
 use SocialContract\V1\Rest\Exception\UniqueConstraintViolationException;
 use Zend\Paginator\Adapter\ArrayAdapter;
 
@@ -136,10 +137,13 @@ class ContratoMapper implements MapperInterface {
         $query->setParameter(1, $id);
         $contract = $query->getOneOrNullResult();
 
-        $file = file_get_contents($contract->getFilePath());
+        if (is_null($contract)) {
+            throw new NotFoundException("O ID informado não pertence a uma instância cadastrada de Contrato Social");
+        }
+
         $return = [
             'responsible' => [],
-            'file' => null,
+            'file' => $contract->getFilePath(),
             'company' => [
                 'corporate_name' => $contract->getCompany()->getCorporateName(),
                 'cnpj' => $contract->getCompany()->getCnpj()
@@ -187,11 +191,11 @@ class ContratoMapper implements MapperInterface {
             try {
                 $sql = 'UPDATE social_contracts SET user_id=?, filename=?, file_path=?, size=? WHERE id=?';
                 $stmt = $connection->prepare($sql);
-                $stmt->bindValue(2, $data->userFile);
-                $stmt->bindValue(3, $data->file['filename']);
-                $stmt->bindValue(4, $data->file['file_path']);
-                $stmt->bindValue(5, $data->file['size']);
-                $stmt->bindValue(6, $id);
+                $stmt->bindValue(1, $data->userFile);
+                $stmt->bindValue(2, $data->file['filename']);
+                $stmt->bindValue(3, $data->file['file_path']);
+                $stmt->bindValue(4, $data->file['size']);
+                $stmt->bindValue(5, $id);
                 $stmt->execute();
                 $connection->commit();
             } catch (\Exception $e) {
@@ -227,6 +231,36 @@ class ContratoMapper implements MapperInterface {
             $sql = 'DELETE FROM social_contracts WHERE id = ?';
             $stmt = $connection->prepare($sql);
             $stmt->bindValue(1, $id);
+            $stmt->execute();
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Valida uma instância de Contrato Social bem como
+     * seus responsáveis
+     * 
+     * @var Integer $id Indentificador da instância de
+     * Contrato Social
+     * @return void
+     */
+    public function validate($id) {
+        $contract = $this->fetch($id);
+
+        if (is_null($contract)) throw new NotFoundException("Não foi encontrada nenhuma instância de Contrato Social para este ID.");
+        
+        // Atualiza o contrato social definindo este
+        // e seus responsáveis como validado
+        $connection = $this->entityManager->getConnection();
+        $connection->beginTransaction();
+        try {
+            $sql = 'UPDATE social_contracts SET validated=? WHERE id=?';
+            $stmt = $connection->prepare($sql);
+            $stmt->bindValue(1, 1);
+            $stmt->bindValue(2, $id);
             $stmt->execute();
             $connection->commit();
         } catch (\Exception $e) {
